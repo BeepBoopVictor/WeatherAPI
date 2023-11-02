@@ -3,6 +3,9 @@ package dacd.gil.control;
 import dacd.gil.model.Location;
 import dacd.gil.model.Weather;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,7 +32,7 @@ public class weatherControl {
 
     public void execute(){
         Instant instant = Instant.now();
-        OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider("8fb79003589f3912f05096709e2dbffd");
+        OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider(getAPIKEY("C:/Users/Usuario/Desktop/ULPGC/GRADO/SEGUNDO/DACD/EJERCICIOS/apiKEY.txt"));
         SQLiteWeatherStore sqLiteWeatherStore = new SQLiteWeatherStore();
         Weather weather;
         Statement statement = connecting("dacd/gil/stuff/database.db");
@@ -37,6 +40,26 @@ public class weatherControl {
             weather = openWeatherMapProvider.weatherGet(location, instant);
             sqLiteWeatherStore.save(weather, statement);
         }
+    }
+
+    private String getAPIKEY(String fileRoot){
+        StringBuilder contenido = new StringBuilder();
+
+        try {
+            FileReader fileReader = new FileReader(fileRoot);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            String linea;
+            while ((linea = bufferedReader.readLine()) != null) {
+                contenido.append(linea).append("\n");
+            }
+
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return contenido.toString();
     }
 
     private Statement connecting(String contentRoot) {

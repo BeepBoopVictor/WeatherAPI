@@ -72,8 +72,8 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     private URL getUrl(Location location, Instant instant) {
         String baseUrl = this.template_url; // URL base con '#'
         String url = baseUrl.replace("#", location.lat + "").replace("#", location.lon + "") + "&appid=" + this.apiKEY;
-        long unixTimestamp = instant.getEpochSecond();
-        url += "&dt=" + unixTimestamp;
+        //long unixTimestamp = instant.getEpochSecond();
+        //url += "&dt=" + unixTimestamp;
         URL returnURL = null;
         try {
             returnURL = new URL(url);
