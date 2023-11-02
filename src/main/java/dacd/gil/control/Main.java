@@ -6,30 +6,25 @@ import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) {
+        weatherControl weatherController = new weatherControl();
         Timer timer = new Timer();
-        Date horaInicio = new Date();
-        horaInicio.setHours(0);
-        horaInicio.setMinutes(0);
-        horaInicio.setSeconds(0);
 
-        // Programa la tarea para ejecutarse cada 6 horas durante 5 días
-        timer.scheduleAtFixedRate(new MiTarea(), horaInicio, 6 * 60 * 60 * 1000); // 6 horas en milisegundos
+        // Configura una tarea que se ejecutará cada 6 horas
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                weatherController.execute();
+            }
+        }, new Date(), 6 * 60 * 60 * 1000); // 6 horas en milisegundos
+
+        // Programa la ejecución durante 5 días
         try {
             Thread.sleep(5 * 24 * 60 * 60 * 1000); // 5 días en milisegundos
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Cancela la tarea y cierra el timer
+        // Cancela la tarea y detiene el Timer después de 5 días
         timer.cancel();
-
-
-    }
-
-    static class MiTarea extends TimerTask {
-        public void run() {
-            weatherControl weatherControl = new weatherControl();
-            weatherControl.execute(); // Llama a tu función execute() aquí
-        }
     }
 }
