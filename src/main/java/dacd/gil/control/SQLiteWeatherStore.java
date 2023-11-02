@@ -1,6 +1,5 @@
 package dacd.gil.control;
 
-import dacd.gil.control.WeatherStore;
 import dacd.gil.model.Location;
 import dacd.gil.model.Weather;
 
@@ -15,13 +14,24 @@ public class SQLiteWeatherStore implements WeatherStore {
     }
 
     @Override
-    public void save(Weather weather){
-        Statement statement = connecting("dacd/gil/stuff/database.db");
+    public void save(Weather weather, Statement statement){
         try {
+            deleteTable(statement, weather.location.name);
             createTable(statement, weather.location.name);
             insert(statement, weather);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteTable(Statement statement, String tableName){
+        try {
+            String query = "DELETE FROM " + tableName;
+            statement.executeUpdate(query);
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones o registro de errores si es necesario
         }
     }
 
@@ -61,25 +71,4 @@ public class SQLiteWeatherStore implements WeatherStore {
         //TODO
     }
 
-    private Statement connecting(String contentRoot) {
-        try {
-            Connection connection = connect(contentRoot);
-            Statement statement = connection.createStatement();
-            return statement;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Connection connect(String dbPath) {
-        try {
-            //String url = "jdbc:sqlite:" + dbPath;
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/java/dacd/gil/stuff/database.db");
-            System.out.println("Connection to SQLite has been established.");
-            return conn;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
 }
