@@ -5,6 +5,7 @@ import dacd.gil.model.Weather;
 
 import java.sql.*;
 import java.time.Instant;
+import java.util.Optional;
 
 import static javax.management.remote.JMXConnectorFactory.connect;
 
@@ -22,6 +23,10 @@ public class SQLiteWeatherStore implements WeatherStore {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void updateValue(Statement, Instant instant, String tableName){
+
     }
 
     public void deleteTable(Statement statement, String tableName){
@@ -66,9 +71,37 @@ public class SQLiteWeatherStore implements WeatherStore {
                 ");");
     }
 
-    @Override
-    public void load(Location location, Instant instant) {
-        //TODO
-    }
 
+
+    /*public Optional<Weather> loadWeather(Location location, Instant instant) {
+        // Me lo traigo para modificarlo --> lo utilizo para actualizar
+        try (Connection connection = DriverManager.getConnection(databaseURL)) {
+            String tableName = location.name;
+
+            // Crear la tabla si no existe
+            createTableIfNotExists(connection, tableName);
+
+            String selectDataSQL = "SELECT * FROM " + tableName + " WHERE date = ?"; // Selecciono todos los campos de la base de datos
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectDataSQL)) {
+                preparedStatement.setObject(1, instant); // Cambia la columna fecha por el instante actual
+                ResultSet resultSet = preparedStatement.executeQuery(); // Datos de la base de datos
+
+                if (resultSet.next()) {
+                    double temperature = resultSet.getDouble("temperature");
+                    double rainfall = resultSet.getDouble("rain");
+                    int humidity = resultSet.getInt("humidity");
+                    int clouds = resultSet.getInt("clouds");
+                    double windSpeed = resultSet.getDouble("wind_speed");
+
+                    Weather weather = new Weather(temperature, humidity, clouds, windSpeed, rainfall, location, instant);
+                    return Optional.of(weather);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }*/
 }
