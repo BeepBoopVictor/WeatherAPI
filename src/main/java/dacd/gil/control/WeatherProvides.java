@@ -5,8 +5,9 @@ import dacd.gil.model.Weather;
 
 import java.net.MalformedURLException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface WeatherProvides {
-    public Weather weatherGet(Location location, Instant instant) throws MalformedURLException;
+    public ArrayList<Weather> weatherGet(Location location, Instant instant) throws MalformedURLException;
 }

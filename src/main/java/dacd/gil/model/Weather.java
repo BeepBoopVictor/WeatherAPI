@@ -9,9 +9,9 @@ public class Weather {
     public double windSpeed;
     public double clouds;
     public Location location;
-    public Instant ts;
+    public String ts;
 
-    public Weather(double temp, int humidity, double rain, double windSpeed, double clouds, Location location, Instant ts) {
+    public Weather(double temp, int humidity, double rain, double windSpeed, double clouds, Location location, String ts) {
         this.temp = Math.round((temp - 272.1) * 100) / 100d;
         this.humidity = humidity;
         this.rain = rain;

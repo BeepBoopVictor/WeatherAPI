@@ -12,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 public class weatherControl {
@@ -34,11 +36,21 @@ public class weatherControl {
         Instant instant = Instant.now();
         OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider(getAPIKEY("C:/Users/Usuario/Desktop/ULPGC/GRADO/SEGUNDO/DACD/EJERCICIOS/apiKEY.txt"));
         SQLiteWeatherStore sqLiteWeatherStore = new SQLiteWeatherStore();
-        Weather weather;
+        ArrayList<Weather> weathers;
         Statement statement = connecting("dacd/gil/stuff/database.db");
+        Instant actualInstant = Instant.now();
+
+        int count;
+
         for(Location location: locations){
-            weather = openWeatherMapProvider.weatherGet(location, instant);
-            sqLiteWeatherStore.save(weather, statement);
+            System.out.println(location);
+            weathers = openWeatherMapProvider.weatherGet(location, actualInstant);
+            System.out.println(weathers.size());
+            count = 0;
+            for (Weather weather: weathers){
+                    sqLiteWeatherStore.save(weather, statement, count);
+                    count++;
+            }
         }
     }
 

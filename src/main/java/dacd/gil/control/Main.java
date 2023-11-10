@@ -9,22 +9,19 @@ public class Main {
         weatherControl weatherController = new weatherControl();
         Timer timer = new Timer();
 
-        // Configura una tarea que se ejecutará cada 6 horas
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 weatherController.execute();
             }
-        }, new Date(), 6 * 60 * 60 * 1000); // 6 horas en milisegundos
+        }, new Date(), 6 * 60 * 60 * 1000);
 
-        // Programa la ejecución durante 5 días
         try {
-            Thread.sleep(5 * 24 * 60 * 60 * 1000); // 5 días en milisegundos
+            Thread.sleep(5 * 24 * 60 * 60 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Cancela la tarea y detiene el Timer después de 5 días
         timer.cancel();
     }
 }
