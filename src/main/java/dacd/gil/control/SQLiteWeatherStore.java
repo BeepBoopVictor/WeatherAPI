@@ -5,21 +5,25 @@ import dacd.gil.model.Weather;
 import java.sql.*;
 
 public class SQLiteWeatherStore implements WeatherStore {
+    private int count = 0;
 
     public SQLiteWeatherStore() {
     }
 
     @Override
-    public void save(Weather weather, Statement statement, int count){
+    public void save(Weather weather, Statement statement){
         try {
             createTable(statement, weather.location.name);
             if(getRecordCount(weather.location.name, statement) < 5){
                 insert(statement, weather);
             } else {
+                count++;
+                System.out.println(count);
                 if (count < 5){
                     updateValue(statement, weather);
                 } else {
                     insert(statement, weather);
+                    count = 0;
                 }
             }
         } catch (SQLException e) {

@@ -40,16 +40,11 @@ public class weatherControl {
         Statement statement = connecting("dacd/gil/stuff/database.db");
         Instant actualInstant = Instant.now();
 
-        int count;
 
         for(Location location: locations){
-            System.out.println(location);
             weathers = openWeatherMapProvider.weatherGet(location, actualInstant);
-            System.out.println(weathers.size());
-            count = 0;
             for (Weather weather: weathers){
-                    sqLiteWeatherStore.save(weather, statement, count);
-                    count++;
+                    sqLiteWeatherStore.save(weather, statement);
             }
         }
     }

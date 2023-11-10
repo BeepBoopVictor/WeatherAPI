@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface WeatherStore {
 
-    void save(Weather weather, Statement statement, int count);
+    void save(Weather weather, Statement statement);
 
     //public Optional<Weather> loadWeather(Location location, Instant instant);
 }
