@@ -26,13 +26,13 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         URL url = getUrl(location, instant);
         String jsonWeather = getStringBuilder(url);
         try {
-            return parseJsonData(jsonWeather, location, instant);
+            return parseJsonData(jsonWeather, location);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private ArrayList<Weather> parseJsonData(String jsonData, Location location, Instant instant) throws JsonProcessingException {
+    private ArrayList<Weather> parseJsonData(String jsonData, Location location) throws JsonProcessingException {
         ArrayList<Weather> weathers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonData);

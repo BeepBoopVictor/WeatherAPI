@@ -11,5 +11,5 @@ public interface WeatherStore {
 
     void save(Weather weather, Statement statement);
 
-    //public Optional<Weather> loadWeather(Location location, Instant instant);
+    public Optional<Weather> loadWeather(Location location, Instant instant);
 }
