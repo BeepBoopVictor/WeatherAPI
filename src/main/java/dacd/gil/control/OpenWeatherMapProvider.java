@@ -1,8 +1,7 @@
 package dacd.gil.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dacd.gil.model.Location;
-import dacd.gil.model.Weather;
+import dacd.gil.model.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -23,13 +22,11 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     }
 
     public ArrayList<Weather> weatherGet(Location location, Instant instant) {
-        URL url = getUrl(location, instant);
+        URL url = getUrl(location);
         String jsonWeather = getStringBuilder(url);
         try {
             return parseJsonData(jsonWeather, location);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (JsonProcessingException e) {throw new RuntimeException(e);}
     }
 
     private ArrayList<Weather> parseJsonData(String jsonData, Location location) throws JsonProcessingException {
@@ -39,21 +36,24 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         JsonNode list = jsonNode.get("list");
 
         for (JsonNode item: list){
-            double temperature = item.get("main").get("temp").asDouble();
-            int humidity = item.get("main").get("humidity").asInt();
-            int clouds = item.get("clouds").get("all").asInt();
-            double windSpeed = item.get("wind").get("speed").asDouble();
-            String time = item.get("dt_txt").asText();
-
-            double rain = 0.0;
-            if (item.has("pop")) {
-                rain = item.get("pop").asDouble();
-            }
-            if(item.get("dt_txt").asText().endsWith("00:00:00")){
-                weathers.add(new Weather(temperature, humidity, rain, windSpeed, clouds, location, time));
-            }
+            introduceWeathers(location, item, weathers);
         }
         return weathers;
+    }
+
+    private static void introduceWeathers(Location location, JsonNode item, ArrayList<Weather> weathers) {
+        double temperature = item.get("main").get("temp").asDouble();
+        int humidity = item.get("main").get("humidity").asInt();
+        int clouds = item.get("clouds").get("all").asInt();
+        double windSpeed = item.get("wind").get("speed").asDouble();
+        String time = item.get("dt_txt").asText();
+        double rain = 0.0;
+        if (item.has("pop")) {
+            rain = item.get("pop").asDouble();
+        }
+        if(item.get("dt_txt").asText().endsWith("00:00:00")){
+            weathers.add(new Weather(temperature, humidity, rain, windSpeed, clouds, location, time));
+        }
     }
 
     private static String getStringBuilder(URL url) {
@@ -62,31 +62,22 @@ public class OpenWeatherMapProvider implements WeatherProvides {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
-
             informationString = new StringBuilder();
             Scanner scanner = new Scanner(url.openStream());
-
             while (scanner.hasNext()) {
                 informationString.append(scanner.nextLine());
             }
-
             scanner.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (IOException e) {throw new RuntimeException(e);}
         return informationString.toString();
     }
 
-    private URL getUrl(Location location, Instant instant) {
-        String baseUrl = this.template_url; // URL base con '#'
-        String url = baseUrl.replace("#", location.lat + "").replace("#", location.lon + "") + "&appid=" + this.apiKEY;
-        URL returnURL = null;
+    private URL getUrl(Location location) {
+        String url = this.template_url.replace("#", location.lat + "").replace("#", location.lon + "") + "&appid=" + this.apiKEY;
+        URL returnURL;
         try {
             returnURL = new URL(url);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (MalformedURLException e) {throw new RuntimeException(e);}
         return returnURL;
     }
 }

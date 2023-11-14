@@ -29,27 +29,22 @@ public class SQLiteWeatherStore implements WeatherStore {
                     count = 0;
                 }
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) {throw new RuntimeException(e);}
     }
 
     public static int getRecordCount(String tableName, Statement statement) {
-        int recordCount = -1; // Valor predeterminado en caso de error
+        int recordCount = -1;
         try{
             String query = "SELECT COUNT(*) FROM " + tableName;
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                recordCount = resultSet.getInt(1); // El resultado se encuentra en la primera columna
+                recordCount = resultSet.getInt(1);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) {e.printStackTrace();}
         return recordCount;
     }
 
-
-    public void updateValue(Statement statement, Weather weather){
+    public void updateValue(Statement statement, Weather weather) {
         String query = "UPDATE " + weather.location.name + " SET Temperature = ?, Rainfall = ?, Humidity = ?, Clouds = ?, WindSpeed = ? WHERE Date = ?";
         try (PreparedStatement preparedStatement = statement.getConnection().prepareStatement(query)) {
             preparedStatement.setDouble(2, weather.temp);
@@ -57,28 +52,16 @@ public class SQLiteWeatherStore implements WeatherStore {
             preparedStatement.setInt(4, weather.humidity);
             preparedStatement.setDouble(5, weather.clouds);
             preparedStatement.setDouble(6, weather.windSpeed);
-            preparedStatement.setString(1, weather.ts.toString());
+            preparedStatement.setString(1, weather.ts);
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteTable(Statement statement, String tableName){
-        try {
-            String query = "DELETE FROM " + tableName;
-            statement.executeUpdate(query);
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) {e.printStackTrace();}
     }
 
     private void insert(Statement statement, Weather weather) {
         String insertQuery = "INSERT INTO " + weather.location.name + " VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = statement.getConnection().prepareStatement(insertQuery)) {
-            preparedStatement.setString(1, weather.ts.toString());
+            preparedStatement.setString(1, weather.ts);
             preparedStatement.setDouble(2, weather.temp);
             preparedStatement.setDouble(3, weather.rain);
             preparedStatement.setInt(4, weather.humidity);
@@ -86,9 +69,7 @@ public class SQLiteWeatherStore implements WeatherStore {
             preparedStatement.setDouble(6, weather.windSpeed);
 
             preparedStatement.execute();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) {throw new RuntimeException(e);}
     }
 
     private void createTable(Statement statement, String name) throws SQLException {
@@ -111,20 +92,21 @@ public class SQLiteWeatherStore implements WeatherStore {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 if (resultSet.next()) {
-                    double temperature = resultSet.getDouble("temperature");
-                    double rainfall = resultSet.getDouble("rain");
-                    int humidity = resultSet.getInt("humidity");
-                    int clouds = resultSet.getInt("clouds");
-                    double windSpeed = resultSet.getDouble("wind_speed");
-
-                    Weather loadedWeather = new Weather(temperature, humidity, rainfall, windSpeed, clouds, location, instant.toString());
+                    Weather loadedWeather = getWeather(location, instant, resultSet);
                     return Optional.of(loadedWeather);
-
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) {e.printStackTrace();}
         return Optional.empty();
+    }
+
+    private static Weather getWeather(Location location, Instant instant, ResultSet resultSet) throws SQLException {
+        double temperature = resultSet.getDouble("temperature");
+        double rainfall = resultSet.getDouble("rain");
+        int humidity = resultSet.getInt("humidity");
+        int clouds = resultSet.getInt("clouds");
+        double windSpeed = resultSet.getDouble("wind_speed");
+
+        return new Weather(temperature, humidity, rainfall, windSpeed, clouds, location, instant.toString());
     }
 }

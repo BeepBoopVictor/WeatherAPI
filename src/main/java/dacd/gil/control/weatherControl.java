@@ -3,16 +3,11 @@ package dacd.gil.control;
 import dacd.gil.model.Location;
 import dacd.gil.model.Weather;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +27,12 @@ public class weatherControl {
         });
     }
 
-    public void execute(){
-        Instant instant = Instant.now();
-        OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider(getAPIKEY("C:/Users/Usuario/Desktop/ULPGC/GRADO/SEGUNDO/DACD/EJERCICIOS/apiKEY.txt"));
+    public void execute(String apiKey, String dbPath){
+        OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider(apiKey);
         SQLiteWeatherStore sqLiteWeatherStore = new SQLiteWeatherStore();
         ArrayList<Weather> weathers;
-        Statement statement = connecting("dacd/gil/stuff/database.db");
+        Statement statement = connecting(dbPath);
         Instant actualInstant = Instant.now();
-
 
         for(Location location: locations){
             weathers = openWeatherMapProvider.weatherGet(location, actualInstant);
@@ -49,44 +42,19 @@ public class weatherControl {
         }
     }
 
-    private String getAPIKEY(String fileRoot){
-        StringBuilder contenido = new StringBuilder();
-
-        try {
-            FileReader fileReader = new FileReader(fileRoot);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            String linea;
-            while ((linea = bufferedReader.readLine()) != null) {
-                contenido.append(linea).append("\n");
-            }
-
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return contenido.toString();
-    }
-
     private Statement connecting(String contentRoot) {
         try {
             Connection connection = connect(contentRoot);
-            Statement statement = connection.createStatement();
-            return statement;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return connection.createStatement();
+        } catch (SQLException e) {throw new RuntimeException(e);}
     }
 
     public static Connection connect(String dbPath) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:src/main/java/" + dbPath);
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
             System.out.println("Connection to SQLite has been established.");
             return conn;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        } catch (SQLException e) {System.out.println(e.getMessage());}
         return null;
     }
 }
