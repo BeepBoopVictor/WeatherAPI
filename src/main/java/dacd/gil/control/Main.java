@@ -19,8 +19,6 @@ public class Main {
             hour12Millis = getHour12Millis(actualTime + TimeUnit.DAYS.toMillis(1));
         }
 
-        weatherController.execute(args[0], args[1]);
-
         long differenceTo12 = hour12Millis - actualTime;
         scheduler.scheduleAtFixedRate(() -> execute(timer, weatherController, args[0], args[1]), differenceTo12, 24*60*60*1000, TimeUnit.MILLISECONDS);
     }

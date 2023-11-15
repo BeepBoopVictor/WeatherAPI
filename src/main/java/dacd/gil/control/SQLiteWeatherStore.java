@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.Optional;
 
 public class SQLiteWeatherStore implements WeatherStore {
-    private int count = 0;
 
     public SQLiteWeatherStore() {
     }
@@ -20,16 +19,30 @@ public class SQLiteWeatherStore implements WeatherStore {
             if(getRecordCount(weather.location.name, statement) < 5){
                 insert(statement, weather);
             } else {
-                count++;
-                System.out.println(count);
-                if (count < 5){
+                if (searchDate(weather.location.name, statement, weather.ts)){
                     updateValue(statement, weather);
+                    System.out.println(weather.location.name + ", " + weather.ts + " = true");
                 } else {
                     insert(statement, weather);
-                    count = 0;
+                    System.out.println(weather.location.name + ", " + weather.ts + " = false");
                 }
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
+    }
+
+    public static boolean searchDate(String tableName, Statement statement, String date){
+        try{
+            ResultSet resultSet = statement.executeQuery("SELECT * from " + tableName);
+            while(resultSet.next()){
+                String columnValue = resultSet.getString(1);
+                if (date.equals(columnValue)){
+                    resultSet.close();
+                    return true;
+                }
+            }
+            resultSet.close();
+            return false;
+        } catch(SQLException e){e.printStackTrace(); return false;}
     }
 
     public static int getRecordCount(String tableName, Statement statement) {
@@ -73,14 +86,14 @@ public class SQLiteWeatherStore implements WeatherStore {
     }
 
     private void createTable(Statement statement, String name) throws SQLException {
-        statement.execute("CREATE TABLE IF NOT EXISTS " + name + " (" +
-                "Date TEXT," +
-                "Temperature REAL," +
-                "Rainfall REAL," +
-                "Humidity REAL," +
-                "Clouds REAL," +
-                "WindSpeed REAL" +
-                ");");
+            statement.execute("CREATE TABLE IF NOT EXISTS " + name + " (" +
+                    "Date TEXT," +
+                    "Temperature REAL," +
+                    "Rainfall REAL," +
+                    "Humidity REAL," +
+                    "Clouds REAL," +
+                    "WindSpeed REAL" +
+                    ");");
     }
 
     public Optional<Weather> loadWeather(Location location, Instant instant) {
