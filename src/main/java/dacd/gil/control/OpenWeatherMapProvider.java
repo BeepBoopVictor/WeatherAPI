@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OpenWeatherMapProvider implements WeatherProvides {
     private final String template_url;
-    public String apiKEY;
+    private final String apiKEY;
 
     public OpenWeatherMapProvider(String apiKEY) {
         this.template_url = "https://api.openweathermap.org/data/2.5/forecast?lat=#&lon=#";
@@ -73,7 +73,7 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     }
 
     private URL getUrl(Location location) {
-        String url = this.template_url.replace("#", location.lat + "").replace("#", location.lon + "") + "&appid=" + this.apiKEY;
+        String url = this.template_url.replace("#", location.getLat() + "").replace("#", location.getLon() + "") + "&appid=" + this.apiKEY;
         URL returnURL;
         try {
             returnURL = new URL(url);

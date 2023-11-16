@@ -9,23 +9,18 @@ import java.util.Optional;
 
 public class SQLiteWeatherStore implements WeatherStore {
 
-    public SQLiteWeatherStore() {
-    }
+    public SQLiteWeatherStore() {}
 
     @Override
     public void save(Weather weather, Statement statement){
         try {
-            createTable(statement, weather.location.name);
-            if(getRecordCount(weather.location.name, statement) < 5){
-                insert(statement, weather);
+            createTable(statement, weather.getLocation().getName());
+            if (searchDate(weather.getLocation().getName(), statement, weather.getTs())){
+                updateValue(statement, weather);
+                System.out.println("TRUE");
             } else {
-                if (searchDate(weather.location.name, statement, weather.ts)){
-                    updateValue(statement, weather);
-                    System.out.println(weather.location.name + ", " + weather.ts + " = true");
-                } else {
-                    insert(statement, weather);
-                    System.out.println(weather.location.name + ", " + weather.ts + " = false");
-                }
+                insert(statement, weather);
+                System.out.println("FALSE");
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
     }
@@ -45,41 +40,29 @@ public class SQLiteWeatherStore implements WeatherStore {
         } catch(SQLException e){e.printStackTrace(); return false;}
     }
 
-    public static int getRecordCount(String tableName, Statement statement) {
-        int recordCount = -1;
-        try{
-            String query = "SELECT COUNT(*) FROM " + tableName;
-            ResultSet resultSet = statement.executeQuery(query);
-            if (resultSet.next()) {
-                recordCount = resultSet.getInt(1);
-            }
-        } catch (SQLException e) {e.printStackTrace();}
-        return recordCount;
-    }
-
     public void updateValue(Statement statement, Weather weather) {
-        String query = "UPDATE " + weather.location.name + " SET Temperature = ?, Rainfall = ?, Humidity = ?, Clouds = ?, WindSpeed = ? WHERE Date = ?";
+        String query = "UPDATE " + weather.getLocation().getName() + " SET Temperature = ?, Rainfall = ?, Humidity = ?, Clouds = ?, WindSpeed = ? WHERE Date = ?";
         try (PreparedStatement preparedStatement = statement.getConnection().prepareStatement(query)) {
-            preparedStatement.setDouble(2, weather.temp);
-            preparedStatement.setDouble(3, weather.rain);
-            preparedStatement.setInt(4, weather.humidity);
-            preparedStatement.setDouble(5, weather.clouds);
-            preparedStatement.setDouble(6, weather.windSpeed);
-            preparedStatement.setString(1, weather.ts);
+            preparedStatement.setDouble(2, weather.getTemp());
+            preparedStatement.setDouble(3, weather.getRain());
+            preparedStatement.setInt(4, weather.getHumidity());
+            preparedStatement.setDouble(5, weather.getClouds());
+            preparedStatement.setDouble(6, weather.getWindSpeed());
+            preparedStatement.setString(1, weather.getTs());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {e.printStackTrace();}
     }
 
     private void insert(Statement statement, Weather weather) {
-        String insertQuery = "INSERT INTO " + weather.location.name + " VALUES (?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO " + weather.getLocation().getName() + " VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = statement.getConnection().prepareStatement(insertQuery)) {
-            preparedStatement.setString(1, weather.ts);
-            preparedStatement.setDouble(2, weather.temp);
-            preparedStatement.setDouble(3, weather.rain);
-            preparedStatement.setInt(4, weather.humidity);
-            preparedStatement.setDouble(5, weather.clouds);
-            preparedStatement.setDouble(6, weather.windSpeed);
+            preparedStatement.setString(1, weather.getTs());
+            preparedStatement.setDouble(2, weather.getTemp());
+            preparedStatement.setDouble(3, weather.getRain());
+            preparedStatement.setInt(4, weather.getHumidity());
+            preparedStatement.setDouble(5, weather.getClouds());
+            preparedStatement.setDouble(6, weather.getWindSpeed());
 
             preparedStatement.execute();
         } catch (SQLException e) {throw new RuntimeException(e);}
@@ -98,7 +81,7 @@ public class SQLiteWeatherStore implements WeatherStore {
 
     public Optional<Weather> loadWeather(Location location, Instant instant) {
         try (Connection connection = DriverManager.getConnection("jdbc:mysql:dacd/gil/stuff/database.db")) {
-            String selectDataSQL = "SELECT * FROM " + location.name + " WHERE date = ?";
+            String selectDataSQL = "SELECT * FROM " + location.getName() + " WHERE date = ?";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectDataSQL)) {
                 preparedStatement.setObject(1, instant);
