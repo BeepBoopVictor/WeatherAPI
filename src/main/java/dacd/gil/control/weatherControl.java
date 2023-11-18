@@ -10,11 +10,14 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class weatherControl {
-    public final List<Location> locations;
+    private final List<Location> locations;
+    private final OpenWeatherMapProvider openWeatherMapProvider;
+    private final SQLiteWeatherStore sqLiteWeatherStore;
 
-    public weatherControl() {
+    public weatherControl(OpenWeatherMapProvider openWeatherMapProvider, SQLiteWeatherStore sqLiteWeatherStore) {
         this.locations = List.of(new Location[]{
                 new Location("GranCanaria", 28.1, -15.41),
                 new Location("Tenerife", 28.46, -16.25),
@@ -25,19 +28,19 @@ public class weatherControl {
                 new Location("LaGomera", 28.1, -17.11),
                 new Location("LaGraciosa", 28.05, -15.44),
         });
+        this.openWeatherMapProvider = openWeatherMapProvider;
+        this.sqLiteWeatherStore = sqLiteWeatherStore;
     }
 
-    public void execute(String apiKey, String dbPath){
-        OpenWeatherMapProvider openWeatherMapProvider = new OpenWeatherMapProvider(apiKey);
-        SQLiteWeatherStore sqLiteWeatherStore = new SQLiteWeatherStore();
+    public void execute(String dbPath){
         ArrayList<Weather> weathers;
         Statement statement = connecting(dbPath);
         Instant actualInstant = Instant.now();
 
         for(Location location: locations){
-            weathers = openWeatherMapProvider.weatherGet(location, actualInstant);
+            weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);
             for (Weather weather: weathers){
-                    sqLiteWeatherStore.save(weather, statement);
+                    this.sqLiteWeatherStore.save(weather, statement);
             }
         }
     }

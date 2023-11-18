@@ -17,10 +17,8 @@ public class SQLiteWeatherStore implements WeatherStore {
             createTable(statement, weather.getLocation().getName());
             if (searchDate(weather.getLocation().getName(), statement, weather.getTs())){
                 updateValue(statement, weather);
-                System.out.println("TRUE");
             } else {
                 insert(statement, weather);
-                System.out.println("FALSE");
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
     }
@@ -79,11 +77,11 @@ public class SQLiteWeatherStore implements WeatherStore {
                     ");");
     }
 
-    public Optional<Weather> loadWeather(Location location, Instant instant) {
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql:dacd/gil/stuff/database.db")) {
+    public Optional<Weather> loadWeather(Statement statement, Location location, Instant instant) {
+        try {
             String selectDataSQL = "SELECT * FROM " + location.getName() + " WHERE date = ?";
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(selectDataSQL)) {
+            try (PreparedStatement preparedStatement = statement.getConnection().prepareStatement(selectDataSQL)) {
                 preparedStatement.setObject(1, instant);
                 ResultSet resultSet = preparedStatement.executeQuery();
 

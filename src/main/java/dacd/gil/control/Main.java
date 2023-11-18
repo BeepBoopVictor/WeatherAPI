@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        weatherControl weatherController = new weatherControl();
+        weatherControl weatherController = new weatherControl(new OpenWeatherMapProvider(args[0]), new SQLiteWeatherStore());
         Timer timer = new Timer();
         ScheduledExecutorService scheduler  = Executors.newSingleThreadScheduledExecutor();
         long actualTime = System.currentTimeMillis();
@@ -27,14 +27,13 @@ public class Main {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                weatherController.execute(apiKey, dbPath);
+                weatherController.execute(dbPath);
             }
         }, new Date(), 6 * 60 * 60 * 1000);
 
         try {
             Thread.sleep(5 * 24 * 60 * 60 * 1000);
         } catch (InterruptedException e) {e.printStackTrace();}
-
         timer.cancel();
     }
 
