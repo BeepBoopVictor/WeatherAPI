@@ -1,6 +1,5 @@
 package dacd.gil.model;
-
-import java.time.Instant;
+import java.util.Date;
 
 public class Weather {
     private double temp;
@@ -9,15 +8,19 @@ public class Weather {
     private double windSpeed;
     private double clouds;
     private Location location;
+    private String predictionTime;
     private String ts;
+    private String ss;
 
-    public Weather(double temp, int humidity, double rain, double windSpeed, double clouds, Location location, String ts) {
+    public Weather(double temp, int humidity, double rain, double windSpeed, double clouds, Location location, String predictionTime, String ts) {
         this.temp = Math.round((temp - 272.1) * 100) / 100d;
         this.humidity = humidity;
         this.rain = rain;
         this.windSpeed = windSpeed;
         this.clouds = clouds;
         this.location = location;
+        this.predictionTime = predictionTime;
+        this.ss = "predict-provider";
         this.ts = ts;
     }
 
@@ -45,7 +48,11 @@ public class Weather {
         return location;
     }
 
-    public String getTs() {
-        return ts;
+    public String getPredictionTime() {
+        return predictionTime;
     }
+
+    public String getTs() {return ts;}
+
+    public String getSs() {return ss;}
 }

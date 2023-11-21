@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,7 +22,7 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         this.apiKEY = apiKEY;
     }
 
-    public ArrayList<Weather> weatherGet(Location location, Instant instant) {
+    public ArrayList<String> weatherGet(Location location, Instant instant) {
         URL url = getUrl(location);
         String jsonWeather = getStringBuilder(url);
         try {
@@ -29,8 +30,8 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         } catch (JsonProcessingException e) {throw new RuntimeException(e);}
     }
 
-    private ArrayList<Weather> parseJsonData(String jsonData, Location location) throws JsonProcessingException {
-        ArrayList<Weather> weathers = new ArrayList<>();
+    private ArrayList<String> parseJsonData(String jsonData, Location location) throws JsonProcessingException {
+        ArrayList<String> weathers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonData);
         JsonNode list = jsonNode.get("list");
@@ -41,7 +42,10 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         return weathers;
     }
 
-    private static void introduceWeathers(Location location, JsonNode item, ArrayList<Weather> weathers) {
+    private static void introduceWeathers(Location location, JsonNode item, ArrayList<String> weathers) {
+        Weather weather;
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonWeather;
         double temperature = item.get("main").get("temp").asDouble();
         int humidity = item.get("main").get("humidity").asInt();
         int clouds = item.get("clouds").get("all").asInt();
@@ -52,8 +56,16 @@ public class OpenWeatherMapProvider implements WeatherProvides {
             rain = item.get("pop").asDouble();
         }
         if(item.get("dt_txt").asText().endsWith("00:00:00")){
-            weathers.add(new Weather(temperature, humidity, rain, windSpeed, clouds, location, time));
+            weather = new Weather(temperature, humidity, rain, windSpeed, clouds, location, time, LocalDate.now().toString());
+            jsonWeather = convertToJson(weather, objectMapper);
+            weathers.add(jsonWeather);
         }
+    }
+
+    private static String convertToJson(Weather weather, ObjectMapper objectMapper){
+        try {
+            return objectMapper.writeValueAsString(weather);
+        } catch (JsonProcessingException e) {throw new RuntimeException(e);}
     }
 
     private static String getStringBuilder(URL url) {

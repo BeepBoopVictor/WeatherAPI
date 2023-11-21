@@ -1,7 +1,6 @@
 package dacd.gil.control;
 
 import dacd.gil.model.Location;
-import dacd.gil.model.Weather;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,14 +9,13 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class weatherControl {
     private final List<Location> locations;
     private final OpenWeatherMapProvider openWeatherMapProvider;
-    private final SQLiteWeatherStore sqLiteWeatherStore;
+    private final TopicWeather topicWeather;
 
-    public weatherControl(OpenWeatherMapProvider openWeatherMapProvider, SQLiteWeatherStore sqLiteWeatherStore) {
+    public weatherControl(OpenWeatherMapProvider openWeatherMapProvider, TopicWeather topicWeather) {
         this.locations = List.of(new Location[]{
                 new Location("GranCanaria", 28.1, -15.41),
                 new Location("Tenerife", 28.46, -16.25),
@@ -29,35 +27,19 @@ public class weatherControl {
                 new Location("LaGraciosa", 28.05, -15.44),
         });
         this.openWeatherMapProvider = openWeatherMapProvider;
-        this.sqLiteWeatherStore = sqLiteWeatherStore;
+        this.topicWeather = topicWeather;
     }
 
-    public void execute(String dbPath){
-        ArrayList<Weather> weathers;
-        Statement statement = connecting(dbPath);
+    public void execute(){
+        ArrayList<String> weathers;
         Instant actualInstant = Instant.now();
 
         for(Location location: locations){
             weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);
-            for (Weather weather: weathers){
-                    this.sqLiteWeatherStore.save(weather, statement);
+            for (String weather: weathers){
+                System.out.println(weather);
+                this.topicWeather.sendWeather(weather);
             }
         }
-    }
-
-    private Statement connecting(String contentRoot) {
-        try {
-            Connection connection = connect(contentRoot);
-            return connection.createStatement();
-        } catch (SQLException e) {throw new RuntimeException(e);}
-    }
-
-    public static Connection connect(String dbPath) {
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
-            System.out.println("Connection to SQLite has been established.");
-            return conn;
-        } catch (SQLException e) {System.out.println(e.getMessage());}
-        return null;
     }
 }
