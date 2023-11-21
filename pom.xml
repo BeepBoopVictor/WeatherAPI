@@ -5,8 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dacd.gil</groupId>
-    <artifactId>API_weather_2</artifactId>
+    <artifactId>DACD-project</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>predict-provider</module>
+        <module>event-store-builder</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
