@@ -14,7 +14,6 @@ public class TopicWeather implements SendWeatherTopic{
 
     @Override
     public void sendWeather(String jsonWeather) {
-        System.out.println("Prueba");
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_BROKER_URL);
         Connection connection = null;
         try {

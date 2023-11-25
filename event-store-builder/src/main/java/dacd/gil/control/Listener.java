@@ -11,10 +11,11 @@ public class Listener implements WeatherReceiver{
 
     public Listener() {}
 
+    @Override
     public ArrayList<Weather> getWeather() {
-        String brokerUrl = "tcp://localhost:61616"; // Cambia esto según la URL de tu broker ActiveMQ
+        String brokerUrl = "tcp://localhost:61616";
 
-        String topicName = "topic.Weather"; // Cambia esto según el nombre de tu tópico
+        String topicName = "prediciton.Weather";
 
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
