@@ -14,9 +14,7 @@ public class Controller {
 
         public void execute(){
             ArrayList<Weather> weathers = this.listener.getWeather();
-            System.out.println("A");
             for (Weather weather: weathers){
-                System.out.println("weather");
                 this.SQLWeatherStore.save(weather);
             }
         }

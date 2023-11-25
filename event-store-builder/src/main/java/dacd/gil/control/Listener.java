@@ -6,6 +6,8 @@ import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class Listener implements WeatherReceiver{
 
@@ -32,6 +34,8 @@ public class Listener implements WeatherReceiver{
 
             ArrayList<String> weatherJson = new ArrayList<>();
             ArrayList<Weather> weathers = new ArrayList<>();
+            CountDownLatch latch = new CountDownLatch(40);
+
             consumer.setMessageListener(new MessageListener() {
                 @Override
                 public void onMessage(Message message) {
@@ -40,6 +44,8 @@ public class Listener implements WeatherReceiver{
                             TextMessage textMessage = (TextMessage) message;
                             System.out.println("Received message: " + textMessage.getText());
                             weatherJson.add(textMessage.getText());
+
+                            latch.countDown();
                         }
                     } catch (JMSException e) {
                         e.printStackTrace();
@@ -47,9 +53,17 @@ public class Listener implements WeatherReceiver{
                 }
             });
 
-            System.out.println("Waiting for messages. Please wait   :3");
+            System.out.println("Waiting for messages. Please wait...");
 
-            Thread.sleep(Long.MAX_VALUE);
+            try {
+                if (latch.await(5, TimeUnit.MINUTES)) {
+                    System.out.println("No more messages. Exiting...");
+                } else {
+                    System.out.println("Timed out waiting for messages. Exiting...");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             consumer.close();
             session.close();

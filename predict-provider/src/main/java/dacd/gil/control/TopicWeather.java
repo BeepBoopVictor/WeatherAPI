@@ -19,7 +19,7 @@ public class TopicWeather implements SendWeatherTopic{
         try {
             connection = connectionFactory.createConnection();
 
-        connection.start();
+            connection.start();
 
             Session session = connection.createSession(false, TopicSession.AUTO_ACKNOWLEDGE);
 
@@ -32,6 +32,7 @@ public class TopicWeather implements SendWeatherTopic{
             producer.send(message);
 
             System.out.println("JCG printing@@ '" + message.getText() + "'");
+            connection.close();
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }

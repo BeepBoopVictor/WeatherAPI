@@ -15,10 +15,11 @@ public class SQLiteWeatherStore implements WeatherStore{
         try {
             Statement statement = Connect();
             createTable(statement, weather.getLocation().getName());
-            if (searchDate(weather.getLocation().getName(), statement, weather.getTs())){
+            if (searchDate(weather.getLocation().getName(), statement, weather.getPredictionTime())){
                 updateValue(statement, weather);
             } else {
                 insert(statement, weather);
+                System.out.println("TRUE" + weather.getLocation().getName());
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
     }
@@ -82,8 +83,8 @@ public class SQLiteWeatherStore implements WeatherStore{
                 "Rainfall REAL," +
                 "Humidity REAL," +
                 "Clouds REAL," +
-                "WindSpeed REAL" +
-                "SS TEXT" +
+                "WindSpeed REAL," +
+                "SS TEXT," +
                 "PredictionTime TEXT" +
                 ");");
     }
