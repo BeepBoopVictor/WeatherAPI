@@ -34,7 +34,7 @@ public class Main {
         }, new Date(), 6 * 60 * 60 * 1000);
 
         try {
-            Thread.sleep(5 * 24 * 60 * 60 * 1000);
+            Thread. sleep(5 * 24 * 60 * 60 * 1000);
         } catch (InterruptedException e) {e.printStackTrace();}
         timer.cancel();
     }
