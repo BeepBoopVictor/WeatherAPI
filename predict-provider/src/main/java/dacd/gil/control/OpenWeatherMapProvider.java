@@ -25,9 +25,8 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     public ArrayList<String> weatherGet(Location location, Instant instant) {
         URL url = getUrl(location);
         String jsonWeather = getStringBuilder(url);
-        try {
-            return parseJsonData(jsonWeather, location);
-        } catch (JsonProcessingException e) {throw new RuntimeException(e);}
+        try {return parseJsonData(jsonWeather, location);}
+        catch (JsonProcessingException e) {throw new RuntimeException(e);}
     }
 
     private ArrayList<String> parseJsonData(String jsonData, Location location) throws JsonProcessingException {
@@ -87,9 +86,8 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     private URL getUrl(Location location) {
         String url = this.template_url.replace("#", location.getLat() + "").replace("#", location.getLon() + "") + "&appid=" + this.apiKEY;
         URL returnURL;
-        try {
-            returnURL = new URL(url);
-        } catch (MalformedURLException e) {throw new RuntimeException(e);}
+        try {returnURL = new URL(url);}
+        catch (MalformedURLException e) {throw new RuntimeException(e);}
         return returnURL;
     }
 }

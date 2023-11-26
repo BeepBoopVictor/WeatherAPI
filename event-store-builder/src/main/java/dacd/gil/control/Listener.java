@@ -16,20 +16,14 @@ public class Listener implements WeatherReceiver{
     @Override
     public ArrayList<Weather> getWeather() {
         String brokerUrl = "tcp://localhost:61616";
-
         String topicName = "prediciton.Weather";
-
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
 
         try {
             Connection connection = connectionFactory.createConnection();
-
             connection.start();
-
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
             Topic topic = session.createTopic(topicName);
-
             MessageConsumer consumer = session.createConsumer(topic);
 
             ArrayList<String> weatherJson = new ArrayList<>();
@@ -47,31 +41,22 @@ public class Listener implements WeatherReceiver{
 
                             latch.countDown();
                         }
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (JMSException e) {e.printStackTrace();}
                 }
             });
 
             System.out.println("Waiting for messages. Please wait...");
 
             try {
-                if (latch.await(5, TimeUnit.MINUTES)) {
-                    System.out.println("No more messages. Exiting...");
-                } else {
-                    System.out.println("Timed out waiting for messages. Exiting...");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                if (latch.await(5, TimeUnit.MINUTES)) {System.out.println("No more messages. Exiting...");}
+                else {System.out.println("Timed out waiting for messages. Exiting...");}
+            } catch (InterruptedException e) {e.printStackTrace();}
 
             consumer.close();
             session.close();
             connection.close();
 
-            for(String weatherString: weatherJson){
-                weathers.add(jsonToWeather(weatherString));
-            }
+            for(String weatherString: weatherJson){weathers.add(jsonToWeather(weatherString));}
             return weathers;
         } catch (Exception e) {e.printStackTrace();}
         return null;

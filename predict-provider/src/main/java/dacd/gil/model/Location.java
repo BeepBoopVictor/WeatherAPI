@@ -22,4 +22,12 @@ public class Location {
     public double getLon() {
         return lon;
     }
+
+    @Override
+    public String toString() {
+        return "Location{name='" + name + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
+    }
 }
