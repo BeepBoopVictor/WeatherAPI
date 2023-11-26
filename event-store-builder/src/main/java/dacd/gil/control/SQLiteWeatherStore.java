@@ -19,7 +19,6 @@ public class SQLiteWeatherStore implements WeatherStore{
                 updateValue(statement, weather);
             } else {
                 insert(statement, weather);
-                System.out.println("TRUE" + weather.getLocation().getName());
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
     }
@@ -33,7 +32,7 @@ public class SQLiteWeatherStore implements WeatherStore{
         try{
             ResultSet resultSet = statement.executeQuery("SELECT * from " + tableName);
             while(resultSet.next()){
-                String columnValue = resultSet.getString(1);
+                String columnValue = resultSet.getString(8);
                 if (date.equals(columnValue)){
                     resultSet.close();
                     return true;
@@ -88,5 +87,4 @@ public class SQLiteWeatherStore implements WeatherStore{
                 "PredictionTime TEXT" +
                 ");");
     }
-
 }

@@ -33,7 +33,6 @@ public class weatherControl {
         for(Location location: locations){
             weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);
             for (String weather: weathers){
-                System.out.println(weather);
                 this.topicWeather.sendWeather(weather);
             }
         }
