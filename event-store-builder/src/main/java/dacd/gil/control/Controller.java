@@ -1,21 +1,18 @@
 package dacd.gil.control;
 
-import dacd.gil.model.Weather;
 import java.util.ArrayList;
 
 public class Controller {
         private final Listener listener;
-        private final SQLiteWeatherStore SQLWeatherStore;
+        private final WeatherStorage weatherStorage;
 
-        public Controller(Listener listener, SQLiteWeatherStore SQLWeatherStore) {
+        public Controller(Listener listener, WeatherStorage weatherStore) {
             this.listener = listener;
-            this.SQLWeatherStore = SQLWeatherStore;
+            this.weatherStorage = weatherStore;
         }
 
         public void execute(){
-            ArrayList<Weather> weathers = this.listener.getWeather();
-            for (Weather weather: weathers){
-                this.SQLWeatherStore.save(weather);
-            }
+            ArrayList<String> weathers = this.listener.getWeather();
+            for (String weather: weathers){this.weatherStorage.save(weather);}
         }
 }

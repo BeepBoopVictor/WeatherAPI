@@ -14,7 +14,7 @@ public class Listener implements WeatherReceiver{
     public Listener() {}
 
     @Override
-    public ArrayList<Weather> getWeather() {
+    public ArrayList<String> getWeather() {
         String brokerUrl = "tcp://localhost:61616";
         String topicName = "prediciton.Weather";
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
@@ -27,7 +27,6 @@ public class Listener implements WeatherReceiver{
             MessageConsumer consumer = session.createConsumer(topic);
 
             ArrayList<String> weatherJson = new ArrayList<>();
-            ArrayList<Weather> weathers = new ArrayList<>();
             CountDownLatch latch = new CountDownLatch(40);
 
             consumer.setMessageListener(new MessageListener() {
@@ -56,14 +55,8 @@ public class Listener implements WeatherReceiver{
             session.close();
             connection.close();
 
-            for(String weatherString: weatherJson){weathers.add(jsonToWeather(weatherString));}
-            return weathers;
+            return weatherJson;
         } catch (Exception e) {e.printStackTrace();}
         return null;
-    }
-
-    public static Weather jsonToWeather(String jsonWeather){
-        Gson gson = new Gson();
-        return gson.fromJson(jsonWeather, Weather.class);
     }
 }

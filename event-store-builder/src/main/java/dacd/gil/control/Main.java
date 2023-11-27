@@ -6,7 +6,7 @@ import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) {
-        Controller controller = new Controller(new Listener(), new SQLiteWeatherStore(args[0]));
+        Controller controller = new Controller(new Listener(), new WeatherStorage(args[0]));
         Timer timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
