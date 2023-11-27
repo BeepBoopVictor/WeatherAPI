@@ -17,16 +17,6 @@ public class weatherControl {
     private final TopicWeather topicWeather;
 
     public weatherControl(OpenWeatherMapProvider openWeatherMapProvider, TopicWeather topicWeather, String textPath) {
-        /*this.locations = List.of(new Location[]{
-                new Location("GranCanaria", 28.1, -15.41),
-                new Location("Tenerife", 28.46, -16.25),
-                new Location("Fuerteventura", 28.2, -14.00),
-                new Location("Lanzarote", 28.95, -13.76),
-                new Location("LaPalma", 28.71, -17.9),
-                new Location("ElHierro", 27.75, -18),
-                new Location("LaGomera", 28.1, -17.11),
-                new Location("LaGraciosa", 28.05, -15.44),
-        });*/
         this.locations = readLocations(textPath);
         this.openWeatherMapProvider = openWeatherMapProvider;
         this.topicWeather = topicWeather;

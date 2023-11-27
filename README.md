@@ -17,7 +17,19 @@ The development enviroment used in this project is IntelliJ and the database is 
 
  ## Requirements
 
- To use this code it is neccessary to insert to arguments to tha Main function, the first is the API key and the second one the direction to the database.
+ To use this code it is neccessary to insert **two arguments** in the predict-provider's Main, the first one is the **apiKey** and the second one 
+ with a **direction to a txt file** with the json of each locations. Here is the text to put in the file:
+
+* {"name": "GranCanaria","lat": 28.1,"lon": -15.41}
+* {"name": "Tenerife","lat": 28.46,"lon": -16.25}
+* {"name": "Fuerteventura","lat": 28.2,"lon": -14.00}
+* {"name": "Lanzarote","lat": 28.95,"lon": -13.76}
+* {"name": "LaPalma","lat": 28.71,"lon": -17.9}
+* {"name": "ElHierro","lat": 27.75,"lon": -18}
+* {"name": "LaGomera","lat": 28.1,"lon": -17.11}
+* {"name": "LaGraciosa","lat": 28.05,"lon": -15.44}
+
+In the event-store-builder's Main it is only necessary **one argument**, which is the locaton of the database.
 
 ## Design:
 
