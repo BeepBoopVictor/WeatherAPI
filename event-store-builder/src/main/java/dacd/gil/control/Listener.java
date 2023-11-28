@@ -36,7 +36,6 @@ public class Listener implements WeatherReceiver{
                             TextMessage textMessage = (TextMessage) message;
                             System.out.println("Received message: " + textMessage.getText());
                             weatherJson.add(textMessage.getText());
-
                             latch.countDown();
                         }
                     } catch (JMSException e) {e.printStackTrace();}
