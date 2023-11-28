@@ -1,14 +1,25 @@
 package dacd.gil.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import dacd.gil.model.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,28 +54,37 @@ public class OpenWeatherMapProvider implements WeatherProvides {
 
     private static void introduceWeathers(Location location, JsonNode item, ArrayList<String> weathers) {
         Weather weather;
-        ObjectMapper objectMapper = new ObjectMapper();
+        Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
         String jsonWeather;
         double temperature = item.get("main").get("temp").asDouble();
         int humidity = item.get("main").get("humidity").asInt();
         int clouds = item.get("clouds").get("all").asInt();
         double windSpeed = item.get("wind").get("speed").asDouble();
-        String time = item.get("dt_txt").asText();
+        String time_str = item.get("dt_txt").asText();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(time_str, formatter);
+        Instant time = localDateTime.toInstant(ZoneOffset.UTC);
+
         double rain = 0.0;
-        if (item.has("pop")) {
-            rain = item.get("pop").asDouble();
-        }
+        if (item.has("pop")) {rain = item.get("pop").asDouble();}
         if(item.get("dt_txt").asText().endsWith("00:00:00")){
-            weather = new Weather(temperature, humidity, rain, windSpeed, clouds, location, time, LocalDate.now().toString());
-            jsonWeather = convertToJson(weather, objectMapper);
+            weather = new Weather(temperature, humidity, rain, windSpeed, clouds, location, time, Instant.now());
+            jsonWeather = convertToJson(weather, gson);
             weathers.add(jsonWeather);
         }
     }
 
-    private static String convertToJson(Weather weather, ObjectMapper objectMapper){
-        try {
-            return objectMapper.writeValueAsString(weather);
-        } catch (JsonProcessingException e) {throw new RuntimeException(e);}
+    private static String convertToJson(Weather weather, Gson gson){
+        return gson.toJson(weather);
+    }
+
+    public static class InstantAdapter extends TypeAdapter<Instant> {
+        @Override
+        public void write(JsonWriter out, Instant value) throws IOException {out.value(value.toString());}
+
+        @Override
+        public Instant read(JsonReader in) throws IOException {return Instant.parse(in.nextString());}
     }
 
     private static String getStringBuilder(URL url) {
