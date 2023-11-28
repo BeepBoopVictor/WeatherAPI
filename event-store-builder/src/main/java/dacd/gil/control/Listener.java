@@ -1,7 +1,5 @@
 package dacd.gil.control;
 
-import com.google.gson.Gson;
-import dacd.gil.model.Weather;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -21,10 +19,11 @@ public class Listener implements WeatherReceiver{
 
         try {
             Connection connection = connectionFactory.createConnection();
+            connection.setClientID("123");
             connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic topic = session.createTopic(topicName);
-            MessageConsumer consumer = session.createConsumer(topic);
+            MessageConsumer consumer = session.createDurableSubscriber(topic, "Victor");
 
             ArrayList<String> weatherJson = new ArrayList<>();
             CountDownLatch latch = new CountDownLatch(40);
