@@ -22,17 +22,16 @@ public class WeatherStorage implements WeatherStore{
         JsonObject data = (JsonObject) parser.parse(weather);
         String ssValue = data.get("ss").toString().replace("\"", "");
 
-        String pTimeValue = data.get("predictionTime").toString().replace("\"", "");
+        String pTimeValue = data.get("ts").toString().replace("\"", "");
+        System.out.println(pTimeValue);
 
-        String file1Name = "eventstore";
-        String file2Name = "prediction.Weather";
 
-        File file = new File(this.path + File.separator + file1Name);
+        File file = new File(this.path + File.separator + "eventstore");
         if(file.exists()){System.out.println("File exists");}
         else{if(file.mkdir()){System.out.println("Directory created succesfully");}
-             else{System.out.println("Directory not created");}}
+        else{System.out.println("Directory not created");}}
 
-        File file2 = new File(file + File.separator + file2Name);
+        File file2 = new File(file + File.separator + "prediction.Weather");
         if(file2.exists()){System.out.println("File exists");}
         else{if(file2.mkdir()){System.out.println("Directory created succesfully");}
         else{System.out.println("Directory not created");}}
@@ -42,7 +41,7 @@ public class WeatherStorage implements WeatherStore{
         else{if(file3.mkdir()){System.out.println("Directory created succesfully");}
         else{System.out.println("Directory not created");}}
 
-        SimpleDateFormat baseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat baseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try{
             SimpleDateFormat newDateFormat = new SimpleDateFormat("yyyyMMdd");
             String dateOnly = newDateFormat.format(baseDateFormat.parse(pTimeValue));
@@ -50,7 +49,7 @@ public class WeatherStorage implements WeatherStore{
             if(!fileDefinitive.exists()){}
             else{if(fileDefinitive.mkdir()){System.out.println("File created succesfully");}}
 
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(fileDefinitive))){
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileDefinitive, true))) {
                 writer.write(weather);
                 writer.newLine();
             }
