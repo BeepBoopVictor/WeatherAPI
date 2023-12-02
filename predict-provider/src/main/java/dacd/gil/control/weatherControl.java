@@ -1,6 +1,7 @@
 package dacd.gil.control;
 
 import com.google.gson.Gson;
+import dacd.gil.control.exceptions.StoreException;
 import dacd.gil.model.Location;
 
 import java.io.BufferedReader;
@@ -41,7 +42,8 @@ public class weatherControl {
         Instant actualInstant = Instant.now();
 
         for(Location location: locations){
-            weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);
+            try {weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);}
+            catch (StoreException e) {throw new RuntimeException(e);}
             for (String weather: weathers){
                 this.topicWeather.sendWeather(weather);
             }

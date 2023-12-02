@@ -2,6 +2,7 @@ package dacd.gil.control;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dacd.gil.control.exceptions.StoreException;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +18,7 @@ public class WeatherStorage implements WeatherStore{
     }
 
     @Override
-    public void save(String weather) {
+    public void save(String weather) throws StoreException {
         JsonParser parser = new JsonParser();
         JsonObject data = (JsonObject) parser.parse(weather);
         String ssValue = data.get("ss").toString().replace("\"", "");
@@ -54,7 +55,7 @@ public class WeatherStorage implements WeatherStore{
                 writer.newLine();
             }
             catch (IOException e){e.printStackTrace();}
-        } catch (ParseException e) {throw new RuntimeException(e);}
+        } catch (ParseException e) {throw new StoreException("Error parsing the Date");}
 
     }
 }

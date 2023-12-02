@@ -6,20 +6,17 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import dacd.gil.control.exceptions.StoreException;
 import dacd.gil.model.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,15 +26,15 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     private final String apiKEY;
 
     public OpenWeatherMapProvider(String apiKEY) {
-        this.template_url = "https://api.openweathermap.org/data/2.5/forecast?lat=#&lon=#";
+        this.template_url = "https://api.openweathermap.org/data/2.5/forecast?lat=#&lon=!";
         this.apiKEY = apiKEY;
     }
 
-    public ArrayList<String> weatherGet(Location location, Instant instant) {
+    public ArrayList<String> weatherGet(Location location, Instant instant) throws StoreException {
         URL url = getUrl(location);
         String jsonWeather = getStringBuilder(url);
         try {return parseJsonData(jsonWeather, location);}
-        catch (JsonProcessingException e) {throw new RuntimeException(e);}
+        catch (JsonProcessingException e) {throw new StoreException("Error" + e);}
     }
 
     private ArrayList<String> parseJsonData(String jsonData, Location location) throws JsonProcessingException {
@@ -46,9 +43,7 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         JsonNode jsonNode = objectMapper.readTree(jsonData);
         JsonNode list = jsonNode.get("list");
 
-        for (JsonNode item: list){
-            introduceWeathers(location, item, weathers);
-        }
+        for (JsonNode item: list){introduceWeathers(location, item, weathers);}
         return weathers;
     }
 
@@ -103,11 +98,12 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         return informationString.toString();
     }
 
-    private URL getUrl(Location location) {
-        String url = this.template_url.replace("#", location.getLat() + "").replace("#", location.getLon() + "") + "&appid=" + this.apiKEY;
+    public URL getUrl(Location location) {
+        String url = this.template_url.replace("#", location.getLat() + "").replace("!", location.getLon() + "") + "&appid=" + this.apiKEY;
         URL returnURL;
         try {returnURL = new URL(url);}
         catch (MalformedURLException e) {throw new RuntimeException(e);}
+        System.out.println(returnURL);
         return returnURL;
     }
 }

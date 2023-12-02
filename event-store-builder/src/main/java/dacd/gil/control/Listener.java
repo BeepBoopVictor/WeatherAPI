@@ -45,7 +45,7 @@ public class Listener implements WeatherReceiver{
             System.out.println("Waiting for messages. Please wait...");
 
             try {
-                if (latch.await(5, TimeUnit.MINUTES)) {System.out.println("No more messages. Exiting...");}
+                if (latch.await(1, TimeUnit.MINUTES)) {System.out.println("No more messages. Exiting...");}
                 else {System.out.println("Timed out waiting for messages. Exiting...");}
             } catch (InterruptedException e) {e.printStackTrace();}
 

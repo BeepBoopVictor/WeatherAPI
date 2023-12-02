@@ -1,7 +1,7 @@
 package dacd.gil.control;
 
-import dacd.gil.model.Weather;
+import dacd.gil.control.exceptions.StoreException;
 
 public interface WeatherStore {
-    public void save(String weather);
+    void save(String weather) throws StoreException;
 }

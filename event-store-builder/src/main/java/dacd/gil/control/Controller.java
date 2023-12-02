@@ -1,5 +1,7 @@
 package dacd.gil.control;
 
+import dacd.gil.control.exceptions.StoreException;
+
 import java.util.ArrayList;
 
 public class Controller {
@@ -13,6 +15,9 @@ public class Controller {
 
         public void execute(){
             ArrayList<String> weathers = this.listener.getWeather();
-            for (String weather: weathers){this.weatherStorage.save(weather);}
+            for (String weather: weathers){
+                try{this.weatherStorage.save(weather);}
+                catch (StoreException e){e.printStackTrace();};
+            }
         }
 }
