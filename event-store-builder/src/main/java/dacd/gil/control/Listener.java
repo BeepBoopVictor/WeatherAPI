@@ -1,60 +1,7 @@
 package dacd.gil.control;
 
-import jakarta.jms.*;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import dacd.gil.control.exception.StoreException;
 
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-public class Listener implements WeatherReceiver{
-
-    public Listener() {}
-
-    @Override
-    public ArrayList<String> getWeather() {
-        String brokerUrl = "tcp://localhost:61616";
-        String topicName = "prediciton.Weather";
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
-
-        try {
-            Connection connection = connectionFactory.createConnection();
-            connection.setClientID("123");
-            connection.start();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Topic topic = session.createTopic(topicName);
-            MessageConsumer consumer = session.createDurableSubscriber(topic, "Victor");
-
-            ArrayList<String> weatherJson = new ArrayList<>();
-            CountDownLatch latch = new CountDownLatch(40);
-
-            consumer.setMessageListener(new MessageListener() {
-                @Override
-                public void onMessage(Message message) {
-                    try {
-                        if (message instanceof TextMessage) {
-                            TextMessage textMessage = (TextMessage) message;
-                            System.out.println("Received message: " + textMessage.getText());
-                            weatherJson.add(textMessage.getText());
-                            latch.countDown();
-                        }
-                    } catch (JMSException e) {e.printStackTrace();}
-                }
-            });
-
-            System.out.println("Waiting for messages. Please wait...");
-
-            try {
-                if (latch.await(1, TimeUnit.MINUTES)) {System.out.println("No more messages. Exiting...");}
-                else {System.out.println("Timed out waiting for messages. Exiting...");}
-            } catch (InterruptedException e) {e.printStackTrace();}
-
-            consumer.close();
-            session.close();
-            connection.close();
-
-            return weatherJson;
-        } catch (Exception e) {e.printStackTrace();}
-        return null;
-    }
+public interface Listener {
+    void consume(String weatherJson);
 }

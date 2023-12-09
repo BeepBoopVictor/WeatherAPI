@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import dacd.gil.control.exceptions.StoreException;
+import dacd.gil.control.exception.StoreException;
 import dacd.gil.model.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;

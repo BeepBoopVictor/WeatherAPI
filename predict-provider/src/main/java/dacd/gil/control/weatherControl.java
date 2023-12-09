@@ -1,16 +1,14 @@
 package dacd.gil.control;
 
 import com.google.gson.Gson;
-import dacd.gil.control.exceptions.StoreException;
+import dacd.gil.control.exception.StoreException;
 import dacd.gil.model.Location;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 
 public class weatherControl {
     private final ArrayList<Location> locations;

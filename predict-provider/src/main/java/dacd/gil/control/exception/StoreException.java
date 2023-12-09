@@ -1,4 +1,4 @@
-package dacd.gil.control.exceptions;
+package dacd.gil.control.exception;
 
 public class StoreException extends Exception {
 

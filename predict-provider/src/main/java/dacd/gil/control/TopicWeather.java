@@ -20,7 +20,7 @@ public class TopicWeather implements SendWeatherTopic{
             connection = connectionFactory.createConnection();
             connection.start();
             Session session = connection.createSession(false, TopicSession.AUTO_ACKNOWLEDGE);
-            Topic topic = session.createTopic("prediciton.Weather");
+            Topic topic = session.createTopic("prediction.Weather");
             MessageProducer producer = session.createProducer(topic);
             TextMessage message = session.createTextMessage(jsonWeather);
             producer.send(message);
