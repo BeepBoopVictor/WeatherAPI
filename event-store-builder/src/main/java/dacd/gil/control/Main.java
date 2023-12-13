@@ -1,17 +1,16 @@
 package dacd.gil.control;
 
+import dacd.gil.control.exception.StoreException;
+
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main {
-    public static void main(String[] args) {
-        Controller controller = new Controller(new Listener(), new WeatherStorage(args[0]));
-        Timer timer = new Timer();
+    public static void main(String[] args) throws StoreException {
+        AMQTopicSubscriber amqTopicSubscriber = new AMQTopicSubscriber("prediction.Weather", "Victor", "123");
+        FileEventStoreBuilder fileEventStoreBuilder = new FileEventStoreBuilder(args[0]);
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {controller.execute();}
-        }, new Date(), 6 * 60 * 60 * 1000);
+        amqTopicSubscriber.start(fileEventStoreBuilder);
     }
 }
