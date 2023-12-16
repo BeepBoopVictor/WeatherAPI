@@ -40,8 +40,11 @@ public class weatherControl {
         Instant actualInstant = Instant.now();
 
         for(Location location: locations){
-            try {weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);}
-            catch (StoreException e) {throw new RuntimeException(e);}
+            try {
+                weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);
+            } catch (StoreException e) {
+                throw new RuntimeException(e);
+            }
             for (String weather: weathers){
                 this.topicWeather.sendWeather(weather);
             }

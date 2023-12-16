@@ -33,7 +33,9 @@ public class OpenWeatherMapProvider implements WeatherProvides {
     public ArrayList<String> weatherGet(Location location, Instant instant) throws StoreException {
         URL url = getUrl(location);
         String jsonWeather = getStringBuilder(url);
-        try {return parseJsonData(jsonWeather, location);}
+        try {
+            return parseJsonData(jsonWeather, location);
+        }
         catch (JsonProcessingException e) {throw new StoreException("Error" + e);}
     }
 
@@ -42,7 +44,6 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonData);
         JsonNode list = jsonNode.get("list");
-
         for (JsonNode item: list){introduceWeathers(location, item, weathers);}
         return weathers;
     }
@@ -76,10 +77,14 @@ public class OpenWeatherMapProvider implements WeatherProvides {
 
     public static class InstantAdapter extends TypeAdapter<Instant> {
         @Override
-        public void write(JsonWriter out, Instant value) throws IOException {out.value(value.toString());}
+        public void write(JsonWriter out, Instant value) throws IOException {
+            out.value(value.toString());
+        }
 
         @Override
-        public Instant read(JsonReader in) throws IOException {return Instant.parse(in.nextString());}
+        public Instant read(JsonReader in) throws IOException {
+            return Instant.parse(in.nextString());
+        }
     }
 
     private static String getStringBuilder(URL url) {

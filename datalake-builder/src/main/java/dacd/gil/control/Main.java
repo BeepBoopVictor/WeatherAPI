@@ -8,9 +8,11 @@ import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) throws StoreException {
-        AMQTopicSubscriber amqTopicSubscriber = new AMQTopicSubscriber("prediction.Weather", "Victor", "123");
+        AMQTopicSubscriber amqWeatherSubscriber = new AMQTopicSubscriber("prediction.Weather", "Victor", "123");
+        AMQTopicSubscriber amqHotelSubscriber = new AMQTopicSubscriber("prediction.Hotel", "Victor", "321");
         FileEventStoreBuilder fileEventStoreBuilder = new FileEventStoreBuilder(args[0]);
 
-        amqTopicSubscriber.start(fileEventStoreBuilder);
+        amqWeatherSubscriber.start(fileEventStoreBuilder);
+        amqHotelSubscriber.start(fileEventStoreBuilder);
     }
 }
