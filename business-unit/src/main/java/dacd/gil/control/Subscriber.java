@@ -5,5 +5,5 @@ import dacd.gil.control.Exception.CustomException;
 import java.util.ArrayList;
 
 public interface Subscriber {
-    void start(SaveWeather saveWeather) throws CustomException;
+    void start(Controller controller) throws CustomException;
 }

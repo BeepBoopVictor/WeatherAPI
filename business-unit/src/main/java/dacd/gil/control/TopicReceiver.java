@@ -4,22 +4,28 @@ import dacd.gil.control.Exception.CustomException;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class TopicReceiver implements Subscriber{
-    private final String brokerUrl;
-    private final String topicName;
-    private final String consumerName;
-    private final String clientID;
+public class TopicReceiver implements Subscriber {
+    private String brokerUrl;
+    private String topicName;
+    private String consumerName;
+    private String clientID;
+    private ArrayList<String> jsonList;
 
-    public TopicReceiver(String consumerName, String clientID) {
+    public TopicReceiver(String consumerName, String clientID, String topicName) {
         this.brokerUrl = "tcp://localhost:61616";
-        this.topicName = "prediction.Weather";
+        this.topicName = topicName;
         this.consumerName = consumerName;
         this.clientID = clientID;
+        this.jsonList = new ArrayList<>();
     }
 
     @Override
-    public void start(SaveWeather saveWeather) throws CustomException {
+    public void start(Controller controller) throws CustomException {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.brokerUrl);
 
         Session session;
@@ -46,8 +52,8 @@ public class TopicReceiver implements Subscriber{
                 try {
                     String text = ((TextMessage) message).getText();
                     System.out.println(text);
-                    saveWeather.save(text);
-                } catch (JMSException | CustomException e) {
+                    this.jsonList.add(text);
+                } catch (JMSException e) {
                     e.printStackTrace();
                 }
             });
@@ -56,9 +62,5 @@ public class TopicReceiver implements Subscriber{
         }
 
         System.out.println("Running");
-    }
-
-    public void processMessage(){
-
     }
 }

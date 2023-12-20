@@ -4,8 +4,12 @@ import dacd.gil.control.Exception.CustomException;
 
 public class Main {
     public static void main(String[] args) throws CustomException {
-        TopicReceiver topicReceiverHotel = new TopicReceiver("Víctor", "0909");
-        weatherStore weatherStore = new weatherStore(args[0]);
-        topicReceiverHotel.start(weatherStore);
+        FinalListClass finalListClass = new FinalListClass();
+        Controller controller = new Controller(finalListClass);
+        TopicReceiver topicReceiverHotel = new TopicReceiver("Víctor", "0909", "prediction.Hotel");
+        TopicReceiver topicReceiverWeather = new TopicReceiver("Víctor", "0910", "prediction.Weather");
+
+        topicReceiverHotel.start(controller);
+        topicReceiverWeather.start(controller);
     }
 }
