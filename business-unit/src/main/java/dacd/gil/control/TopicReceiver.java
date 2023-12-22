@@ -5,6 +5,8 @@ import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,7 @@ public class TopicReceiver implements Subscriber {
     private String consumerName;
     private String clientID;
     private ArrayList<String> jsonList;
+    private Timer timer;
 
     public TopicReceiver(String consumerName, String clientID, String topicName) {
         this.brokerUrl = "tcp://localhost:61616";
@@ -53,6 +56,17 @@ public class TopicReceiver implements Subscriber {
                     String text = ((TextMessage) message).getText();
                     System.out.println(text);
                     this.jsonList.add(text);
+
+                    if (timer == null){
+                        timer = new Timer(true);
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                processMessages(controller);
+                            }
+                        }, 5000);
+                    }
+
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
@@ -62,5 +76,23 @@ public class TopicReceiver implements Subscriber {
         }
 
         System.out.println("Running");
+    }
+
+    public void processMessages(Controller controller){
+        for (String jsonString : jsonList) {
+            controller.managerGeneral(jsonString, topicName);
+        }
+        for (int i = 0; i < 30; i++){
+            if(controller.hotelPriceWeatherList.get(i).getWeather() != null){
+                System.out.println(controller.hotelPriceWeatherList.get(i).getWeather().getTemp());
+            } else {
+                System.out.println(controller.hotelPriceWeatherList.get(i).getHotelKey() + ", " +
+                        controller.hotelPriceWeatherList.get(i).getDay() + ", " +
+                        controller.hotelPriceWeatherList.get(i).getPriceStatus());
+            }
+        }
+        jsonList.clear();
+        timer.cancel();
+        timer = null;
     }
 }

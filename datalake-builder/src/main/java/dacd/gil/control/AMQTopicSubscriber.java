@@ -45,7 +45,7 @@ public class AMQTopicSubscriber implements Subscriber{
             consumer.setMessageListener(message -> {
                 try {
                     String text = ((TextMessage) message).getText();
-                    listener.consume(text);
+                    listener.consume(text, this.topicName);
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }

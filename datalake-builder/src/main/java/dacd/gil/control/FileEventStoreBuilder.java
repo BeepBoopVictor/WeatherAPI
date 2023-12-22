@@ -18,14 +18,14 @@ public class FileEventStoreBuilder implements Listener{
     }
 
     @Override
-    public void consume(String weather) {
+    public void consume(String weather, String topicName) {
         JsonParser parser = new JsonParser();
         JsonObject data = (JsonObject) parser.parse(weather);
         String ssValue = data.get("ss").toString().replace("\"", "");
 
         String pTimeValue = data.get("ts").toString().replace("\"", "");
 
-        File file3 = createFiles(ssValue);
+        File file3 = createFiles(ssValue, topicName);
 
         SimpleDateFormat baseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try{
@@ -45,13 +45,13 @@ public class FileEventStoreBuilder implements Listener{
         }
     }
 
-    private File createFiles(String ssValue) {
+    private File createFiles(String ssValue, String topicName) {
         File file = new File(this.path + File.separator + "eventstore");
         if(file.exists()){}
         else{if(file.mkdir()){System.out.println("Directory created succesfully");}
         else{System.out.println("Directory not created");}}
 
-        File file2 = new File(file + File.separator + "prediction.Weather");
+        File file2 = new File(file + File.separator + topicName);
         if(file2.exists()){}
         else{if(file2.mkdir()){System.out.println("Directory created succesfully");}
         else{System.out.println("Directory not created");}}

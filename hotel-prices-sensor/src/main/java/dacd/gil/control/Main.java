@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class Main {
     public static void main(String[] args) {
         priceControl priceControl = new priceControl(new PriceProvider(), new TopicHotel());
-        /*Timer timer = new Timer();
+        Timer timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -20,12 +20,6 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-        }, new Date(), 6 * 60 * 60 * 1000);*/
-        try {
-            priceControl.execute(args[0]);
-        } catch (CustomException e) {
-            e.printStackTrace();
-        }
-
+        }, new Date(), 12 * 60 * 60 * 1000);
     }
 }

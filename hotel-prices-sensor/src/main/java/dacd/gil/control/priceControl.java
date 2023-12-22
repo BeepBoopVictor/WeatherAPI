@@ -30,7 +30,6 @@ public class priceControl {
         String checkOutTime = getCheckOut();
         for(hotelValues tokens: hotelValuesArrayList){
             hotelArrayList.add(gson.toJson(this.priceProvider.priceGet(tokens, checkOutTime)));
-            System.out.println(gson.toJson(this.priceProvider.priceGet(tokens, checkOutTime)));
         }
 
         for(String hotel: hotelArrayList){
