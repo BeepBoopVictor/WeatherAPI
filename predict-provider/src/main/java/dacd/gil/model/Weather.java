@@ -14,7 +14,7 @@ public class Weather {
     private String ss;
 
     public Weather(double temp, int humidity, double rain, double windSpeed, double clouds, Location location, Instant predictionTime, Instant ts) {
-        this.temp = Math.round((temp - 272.1) * 100) / 100d;
+        this.temp = temp;
         this.humidity = humidity;
         this.rain = rain;
         this.windSpeed = windSpeed;

@@ -7,14 +7,23 @@ public class HotelPriceWeather {
     private String location;
     private Instant day;
     private String priceStatus;
-    private Weather weather;
+    private double temp;
+    private int humidity;
+    private double rain;
+    private double windSpeed;
+    private double clouds;
 
-    public HotelPriceWeather(String hotelKey, String location, Instant day, Weather weather, String priceStatus) {
+
+    public HotelPriceWeather(String hotelKey, String location, Instant day, String priceStatus) {
         this.hotelKey = hotelKey;
         this.location = location;
         this.day = day;
-        this.weather = weather;
         this.priceStatus = priceStatus;
+        this.temp = 0.0;
+        this.humidity = 0;
+        this.rain = 0.0;
+        this.windSpeed = 0.0;
+        this.clouds = 0.0;
     }
 
     public String getHotelKey() {
@@ -29,15 +38,19 @@ public class HotelPriceWeather {
         return day;
     }
 
-    public Weather getWeather() {
-        return weather;
-    }
-
     public String getPriceStatus() {
         return priceStatus;
     }
 
     public void setWeather(Weather weather) {
-        this.weather = weather;
+        this.temp = weather.getTemp();
+        this.humidity = weather.getHumidity();
+        this.rain = weather.getRain();
+        this.windSpeed = weather.getWindSpeed();
+        this.clouds = weather.getClouds();
+    }
+
+    public double getTemp() {
+        return temp;
     }
 }

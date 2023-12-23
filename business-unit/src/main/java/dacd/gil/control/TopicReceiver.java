@@ -82,9 +82,12 @@ public class TopicReceiver implements Subscriber {
         for (String jsonString : jsonList) {
             controller.managerGeneral(jsonString, topicName);
         }
-        for (int i = 0; i < 30; i++){
-            if(controller.hotelPriceWeatherList.get(i).getWeather() != null){
-                System.out.println(controller.hotelPriceWeatherList.get(i).getWeather().getTemp());
+        for (int i = 0; i < controller.hotelPriceWeatherList.size(); i++){
+            if(controller.hotelPriceWeatherList.get(i).getTemp() != 0.0){
+                System.out.println(controller.hotelPriceWeatherList.get(i).getHotelKey() + ", " +
+                        controller.hotelPriceWeatherList.get(i).getDay() + ", " +
+                        controller.hotelPriceWeatherList.get(i).getPriceStatus() + ", " +
+                        controller.hotelPriceWeatherList.get(i).getTemp());
             } else {
                 System.out.println(controller.hotelPriceWeatherList.get(i).getHotelKey() + ", " +
                         controller.hotelPriceWeatherList.get(i).getDay() + ", " +

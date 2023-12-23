@@ -50,6 +50,7 @@ public class Controller implements Manager{
     public void manageWeather(String jsonString) {
         Weather weather = convertToWeather(jsonString);
         OptionalInt position = checkWeather(weather.getPredictionTime().toString(), weather.getLocation());
+        System.out.println(position);
         if(position.isPresent()){
             addWeather(position.getAsInt(), weather);
         }
@@ -137,7 +138,7 @@ public class Controller implements Manager{
 
     public OptionalInt checkWeather(String date, String island) {
         return IntStream.range(0, this.hotelPriceWeatherList.size())
-                .filter(i -> this.hotelPriceWeatherList.get(i).getDay().equals(date)
+                .filter(i -> this.hotelPriceWeatherList.get(i).getDay().toString().substring(0, 10).equals(date.substring(0, 10))
                         && this.hotelPriceWeatherList.get(i).getLocation().equals(island))
                 .findFirst();
     }
@@ -148,7 +149,7 @@ public class Controller implements Manager{
     }
 
     public void addHotel(Hotel hotel){
-        this.hotelPriceWeatherList.add(new HotelPriceWeather(hotel.getHotelKey(), hotel.getLocation(), hotel.getDay(), null, hotel.getPriceStatus()));
+        this.hotelPriceWeatherList.add(new HotelPriceWeather(hotel.getHotelKey(), hotel.getLocation(), hotel.getDay(), hotel.getPriceStatus()));
     }
 
     public Weather convertToWeather(String jsonString){
@@ -167,6 +168,4 @@ public class Controller implements Manager{
 
         return new Weather(temp, humidity, rain, windSpeed, clouds, predictionTime, location);
     }
-
-
 }
