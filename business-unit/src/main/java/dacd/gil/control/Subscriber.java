@@ -5,5 +5,5 @@ import dacd.gil.control.Exception.CustomException;
 import java.util.ArrayList;
 
 public interface Subscriber {
-    void start(Controller controller) throws CustomException;
+    void start(storeInterface storeInterface) throws CustomException;
 }

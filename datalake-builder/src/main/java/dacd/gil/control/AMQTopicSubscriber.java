@@ -4,56 +4,50 @@ import dacd.gil.control.exception.StoreException;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import java.util.List;
+
 
 public class AMQTopicSubscriber implements Subscriber{
     private final String brokerUrl;
-    private final String topicName;
-    private final String consumerName;
-    private final String clientID;
+    private static Storage storage;
 
-    public AMQTopicSubscriber(String topicName, String consumerName, String clientID) {
+    public AMQTopicSubscriber(Storage storage) {
         this.brokerUrl = "tcp://localhost:61616";
-        this.topicName = topicName;
-        this.consumerName = consumerName;
-        this.clientID = clientID;
+        this.storage = storage;
     }
 
     @Override
-    public void start(Listener listener) throws StoreException {
+    public void start() throws StoreException{
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.brokerUrl);
-
-        Session session;
-        Topic topic;
+        Connection connection = null;
         try {
-            Connection connection = connectionFactory.createConnection();
-            connection.setClientID(this.clientID);
+            connection = connectionFactory.createConnection();
+            connection.setClientID("1234");
             connection.start();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            topic = session.createTopic(this.topicName);
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            createSuscription(session, "prediction.Weather");
+            createSuscription(session, "prediction.Hotel");
         } catch (JMSException e) {
-            throw new StoreException(e);
+            throw new StoreException("Error in start function", e);
         }
+    }
 
-        MessageConsumer consumer = null;
-        try {
-            consumer = session.createDurableSubscriber(topic, this.consumerName);
-        } catch (JMSException e) {
-            throw new StoreException(e);
-        }
-
-        try {
+    private static void createSuscription(Session session, String topic) throws StoreException{
+        try{
+            Topic destination = session.createTopic(topic);
+            MessageConsumer consumer = session.createDurableSubscriber(destination, topic);
             consumer.setMessageListener(message -> {
-                try {
+                try{
                     String text = ((TextMessage) message).getText();
-                    listener.consume(text, this.topicName);
+                    System.out.println(text);
+                    storage.consume(text, topic);
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
             });
         } catch (JMSException e) {
-            throw new StoreException(e);
+            throw new StoreException("Error creating subscription", e);
         }
-
-        System.out.println("Running");
     }
+
 }

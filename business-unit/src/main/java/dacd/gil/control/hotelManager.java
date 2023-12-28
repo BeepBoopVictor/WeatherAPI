@@ -5,55 +5,36 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dacd.gil.control.Exception.CustomException;
 import dacd.gil.model.Hotel;
 import dacd.gil.model.HotelPriceWeather;
-import dacd.gil.model.Weather;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.IntStream;
+import java.util.Map;
 
-public class Controller implements Manager{
-    final List<HotelPriceWeather> hotelPriceWeatherList;
-
-    public Controller() {
-        this.hotelPriceWeatherList = new ArrayList<>();
+public class hotelManager implements Manager{
+    private dataMartSQL dataMartSQL;
+    public hotelManager(dataMartSQL dataMartSQL) {
+        this.dataMartSQL = dataMartSQL;
     }
 
-    @Override
-    public void managerGeneral(String jsonString, String topicName){
-        if (topicName.equals("prediction.Weather")){
-            manageWeather(jsonString);
-        } else {
-            if(!jsonString.equals("null")){
-                manageHotel(jsonString);
-            }
-        }
-    }
-
-    @Override
-    public void manageHotel(String jsonString){
+    public void manageEvents(String jsonString) throws CustomException {
         ArrayList<Hotel> hotels = convertToHotel(jsonString);
+        HotelPriceWeather hotelPriceWeather = new HotelPriceWeather();
+        Map<String, String> hotelMap = new HashMap<>();
         for(Hotel hotel: hotels){
-            if(!checkHotel(hotel.getDay().toString(), hotel.getHotelKey())){
-                addHotel(hotel);
-            }
+            //hotelPriceWeather.setHotel(hotel);
+            hotelMap.put("object", "Hotel");
+            hotelMap.put("location", hotel.getLocation());
+            hotelMap.put("hotelKey", hotel.getHotelKey());
+            hotelMap.put("priceStatus", hotel.getPriceStatus());
+            hotelMap.put("day", hotel.getDay().toString());
         }
-    }
 
-    @Override
-    public void manageWeather(String jsonString) {
-        Weather weather = convertToWeather(jsonString);
-        OptionalInt position = checkWeather(weather.getPredictionTime().toString(), weather.getLocation());
-        System.out.println(position);
-        if(position.isPresent()){
-            addWeather(position.getAsInt(), weather);
-        }
+        dataMartSQL.save(hotelMap);
     }
 
     public ArrayList<Hotel> convertToHotel(String jsonString){
@@ -132,40 +113,4 @@ public class Controller implements Manager{
         return priceList;
     }
 
-    public void addWeather(Integer position, Weather weather){
-        this.hotelPriceWeatherList.get(position).setWeather(weather);
-    }
-
-    public OptionalInt checkWeather(String date, String island) {
-        return IntStream.range(0, this.hotelPriceWeatherList.size())
-                .filter(i -> this.hotelPriceWeatherList.get(i).getDay().toString().substring(0, 10).equals(date.substring(0, 10))
-                        && this.hotelPriceWeatherList.get(i).getLocation().equals(island))
-                .findFirst();
-    }
-
-    public boolean checkHotel(String date, String hotelKey){
-        return this.hotelPriceWeatherList.stream()
-                .anyMatch(item -> item.getDay().equals(date) && item.getHotelKey().equals(hotelKey));
-    }
-
-    public void addHotel(Hotel hotel){
-        this.hotelPriceWeatherList.add(new HotelPriceWeather(hotel.getHotelKey(), hotel.getLocation(), hotel.getDay(), hotel.getPriceStatus()));
-    }
-
-    public Weather convertToWeather(String jsonString){
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(jsonString).getAsJsonObject();
-
-        double temp = jsonObject.get("temp").getAsDouble();
-        int humidity = jsonObject.get("humidity").getAsInt();
-        double rain = jsonObject.get("rain").getAsDouble();
-        double windSpeed = jsonObject.get("windSpeed").getAsDouble();
-        double clouds = jsonObject.get("clouds").getAsDouble();
-        String predictionDateString = jsonObject.get("predictionTime").getAsString();
-        Instant predictionTime = Instant.parse(predictionDateString);
-        String location = jsonObject.getAsJsonObject("location").get("name").getAsString();
-
-
-        return new Weather(temp, humidity, rain, windSpeed, clouds, predictionTime, location);
-    }
 }

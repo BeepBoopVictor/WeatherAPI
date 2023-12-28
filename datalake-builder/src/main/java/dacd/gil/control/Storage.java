@@ -1,7 +1,5 @@
 package dacd.gil.control;
 
-import dacd.gil.control.exception.StoreException;
-
-public interface Listener {
+public interface Storage {
     void consume(String weatherJson, String topicName);
 }

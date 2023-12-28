@@ -1,7 +1,7 @@
 package dacd.gil.control;
 
+import dacd.gil.control.Exception.CustomException;
+
 public interface Manager {
-    void managerGeneral(String jsonString, String topicName);
-    void manageHotel(String jsonString);
-    void manageWeather(String jsonString);
+    void manageEvents(String jsonString) throws CustomException;
 }

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class FileEventStoreBuilder implements Listener{
+public class FileEventStoreBuilder implements Storage{
     private final String path;
     public FileEventStoreBuilder(String fileDirectory) {
         this.path = fileDirectory;

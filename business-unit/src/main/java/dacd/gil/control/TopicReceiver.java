@@ -4,81 +4,60 @@ import dacd.gil.control.Exception.CustomException;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TopicReceiver implements Subscriber {
     private String brokerUrl;
-    private String topicName;
-    private String consumerName;
-    private String clientID;
-    private ArrayList<String> jsonList;
-    private Timer timer;
+    private static Map<String, Manager> mapManager;
 
-    public TopicReceiver(String consumerName, String clientID, String topicName) {
+    public TopicReceiver(Map<String, Manager> mapManager) {
         this.brokerUrl = "tcp://localhost:61616";
-        this.topicName = topicName;
-        this.consumerName = consumerName;
-        this.clientID = clientID;
-        this.jsonList = new ArrayList<>();
+        this.mapManager = mapManager;
     }
 
     @Override
-    public void start(Controller controller) throws CustomException {
+    public void start(storeInterface storeInterface) throws CustomException{
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.brokerUrl);
-
-        Session session;
-        Topic topic;
+        Connection connection = null;
         try {
-            Connection connection = connectionFactory.createConnection();
-            connection.setClientID(this.clientID);
+            connection = connectionFactory.createConnection();
+            connection.setClientID("1234");
             connection.start();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            topic = session.createTopic(this.topicName);
-        } catch (JMSException e) {
-            throw new CustomException("Error connecting", e);
-        }
-
-        MessageConsumer consumer = null;
-        try {
-            consumer = session.createDurableSubscriber(topic, this.consumerName);
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            createSuscription(session, "prediction.Weather");
+            createSuscription(session, "prediction.Hotel");
         } catch (JMSException e) {
             throw new CustomException("", e);
         }
+    }
 
-        try {
+    private static void createSuscription(Session session, String topic) throws CustomException{
+        try{
+            Topic destination = session.createTopic(topic);
+            MessageConsumer consumer = session.createDurableSubscriber(destination, topic);
             consumer.setMessageListener(message -> {
-                try {
+                try{
                     String text = ((TextMessage) message).getText();
-                    System.out.println(text);
-                    this.jsonList.add(text);
-
-                    if (timer == null){
-                        timer = new Timer(true);
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                processMessages(controller);
-                            }
-                        }, 5000);
-                    }
-
+                    Manager manager = mapManager.get(topic);
+                    manager.manageEvents(text);
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
             });
         } catch (JMSException e) {
-            throw new CustomException("Error listening the message", e);
+            throw new CustomException("", e);
         }
-
-        System.out.println("Running");
     }
 
-    public void processMessages(Controller controller){
+
+    /*public void processMessages(Controller controller){
         for (String jsonString : jsonList) {
             controller.managerGeneral(jsonString, topicName);
         }
@@ -98,4 +77,24 @@ public class TopicReceiver implements Subscriber {
         timer.cancel();
         timer = null;
     }
+
+    public void readMessages(Controller controller, String direction, int amountOfLines, String topicName) throws CustomException {
+        try(BufferedReader br = new BufferedReader(new FileReader(direction))){
+            String line;
+            List<String> lines = new ArrayList<>();
+
+            while ((line = br.readLine()) != null){
+                lines.add(line);
+            }
+
+            int totalLines = lines.size();
+            int start = Math.max(0, totalLines - amountOfLines);;
+            int end = totalLines;
+            for (int i = start; i < end; i++){
+                controller.managerGeneral(lines.get(i), topicName);
+            }
+        }catch (IOException e){
+            throw new CustomException("", e);
+        }
+    }*/
 }

@@ -14,16 +14,7 @@ public class HotelPriceWeather {
     private double clouds;
 
 
-    public HotelPriceWeather(String hotelKey, String location, Instant day, String priceStatus) {
-        this.hotelKey = hotelKey;
-        this.location = location;
-        this.day = day;
-        this.priceStatus = priceStatus;
-        this.temp = 0.0;
-        this.humidity = 0;
-        this.rain = 0.0;
-        this.windSpeed = 0.0;
-        this.clouds = 0.0;
+    public HotelPriceWeather() {
     }
 
     public String getHotelKey() {
@@ -48,6 +39,13 @@ public class HotelPriceWeather {
         this.rain = weather.getRain();
         this.windSpeed = weather.getWindSpeed();
         this.clouds = weather.getClouds();
+    }
+
+    public void setHotel(Hotel hotel){
+        this.hotelKey = hotel.getHotelKey();
+        this.location = hotel.getLocation();
+        this.day = hotel.getDay();
+        this.priceStatus = hotel.getPriceStatus();
     }
 
     public double getTemp() {
