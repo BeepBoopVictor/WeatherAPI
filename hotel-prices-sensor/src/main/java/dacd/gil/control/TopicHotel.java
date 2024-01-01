@@ -22,9 +22,7 @@ public class TopicHotel implements SendHotel {
             Topic topic = session.createTopic("prediction.Hotel");
             MessageProducer producer = session.createProducer(topic);
             TextMessage message = session.createTextMessage(hotelJSON);
-            if(message != null) {
-                producer.send(message);
-            }
+            producer.send(message);
             System.out.println("JCG printing@@ '" + message.getText() + "'");
             connection.close();
         } catch (JMSException e) {

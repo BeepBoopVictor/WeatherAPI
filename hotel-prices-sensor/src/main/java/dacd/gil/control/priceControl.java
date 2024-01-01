@@ -33,7 +33,9 @@ public class priceControl {
         }
 
         for(String hotel: hotelArrayList){
-            this.topicHotel.sendHotel(hotel);
+            if(!hotel.equals("null")){
+                this.topicHotel.sendHotel(hotel);
+            }
         }
     }
 

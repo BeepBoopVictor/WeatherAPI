@@ -2,10 +2,12 @@ package dacd.gil.control;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dacd.gil.model.HotelPriceWeather;
+import dacd.gil.control.Exception.CustomException;
 import dacd.gil.model.Weather;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 public class weatherManager implements Manager{
     private dataMartSQL dataStore;
@@ -13,9 +15,19 @@ public class weatherManager implements Manager{
         this.dataStore = dataStore;
     }
 
-    public void manageEvents(String jsonString){
-        HotelPriceWeather hotelPriceWeather = new HotelPriceWeather();
-        hotelPriceWeather.setWeather(convertToWeather(jsonString));
+    @Override
+    public void manageEvents(String jsonString) throws CustomException {
+        Weather weather = convertToWeather(jsonString);
+        Map<String, String> weatherMap = new HashMap<>();
+        weatherMap.put("object", "weather");
+        weatherMap.put("Temperature", String.valueOf(weather.getTemp()));
+        weatherMap.put("Rain", String.valueOf(weather.getRain()));
+        weatherMap.put("Humidity", String.valueOf(weather.getHumidity()));
+        weatherMap.put("Clouds", String.valueOf(weather.getClouds()));
+        weatherMap.put("WindSpeed", String.valueOf(weather.getWindSpeed()));
+        weatherMap.put("location", String.valueOf(weather.getLocation()));
+        weatherMap.put("day", String.valueOf(weather.getPredictionTime()));
+        this.dataStore.save(weatherMap);
     }
 
 
@@ -31,8 +43,6 @@ public class weatherManager implements Manager{
         String predictionDateString = jsonObject.get("predictionTime").getAsString();
         Instant predictionTime = Instant.parse(predictionDateString);
         String location = jsonObject.getAsJsonObject("location").get("name").getAsString();
-
-
         return new Weather(temp, humidity, rain, windSpeed, clouds, predictionTime, location);
     }
 

@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dacd.gil.control.Exception.CustomException;
 import dacd.gil.model.Hotel;
-import dacd.gil.model.HotelPriceWeather;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,20 +20,19 @@ public class hotelManager implements Manager{
         this.dataMartSQL = dataMartSQL;
     }
 
+    @Override
     public void manageEvents(String jsonString) throws CustomException {
         ArrayList<Hotel> hotels = convertToHotel(jsonString);
-        HotelPriceWeather hotelPriceWeather = new HotelPriceWeather();
         Map<String, String> hotelMap = new HashMap<>();
         for(Hotel hotel: hotels){
-            //hotelPriceWeather.setHotel(hotel);
             hotelMap.put("object", "Hotel");
             hotelMap.put("location", hotel.getLocation());
             hotelMap.put("hotelKey", hotel.getHotelKey());
             hotelMap.put("priceStatus", hotel.getPriceStatus());
             hotelMap.put("day", hotel.getDay().toString());
+            dataMartSQL.save(hotelMap);
         }
 
-        dataMartSQL.save(hotelMap);
     }
 
     public ArrayList<Hotel> convertToHotel(String jsonString){

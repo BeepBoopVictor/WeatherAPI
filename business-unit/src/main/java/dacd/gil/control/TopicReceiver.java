@@ -3,19 +3,13 @@ package dacd.gil.control;
 import dacd.gil.control.Exception.CustomException;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 
 public class TopicReceiver implements Subscriber {
     private String brokerUrl;
     private static Map<String, Manager> mapManager;
+    private static final Object lock = new Object();
 
     public TopicReceiver(Map<String, Manager> mapManager) {
         this.brokerUrl = "tcp://localhost:61616";
@@ -43,12 +37,8 @@ public class TopicReceiver implements Subscriber {
             Topic destination = session.createTopic(topic);
             MessageConsumer consumer = session.createDurableSubscriber(destination, topic);
             consumer.setMessageListener(message -> {
-                try{
-                    String text = ((TextMessage) message).getText();
-                    Manager manager = mapManager.get(topic);
-                    manager.manageEvents(text);
-                } catch (JMSException e) {
-                    e.printStackTrace();
+                synchronized (lock){
+                    manageEventsSend(topic, (TextMessage) message);
                 }
             });
         } catch (JMSException e) {
@@ -56,45 +46,15 @@ public class TopicReceiver implements Subscriber {
         }
     }
 
-
-    /*public void processMessages(Controller controller){
-        for (String jsonString : jsonList) {
-            controller.managerGeneral(jsonString, topicName);
+    private static void manageEventsSend(String topic, TextMessage message) {
+        try{
+            String text = message.getText();
+            System.out.println(text);
+            Manager manager = mapManager.get(topic);
+            manager.manageEvents(text);
+        } catch (JMSException | CustomException e) {
+            e.printStackTrace();
         }
-        for (int i = 0; i < controller.hotelPriceWeatherList.size(); i++){
-            if(controller.hotelPriceWeatherList.get(i).getTemp() != 0.0){
-                System.out.println(controller.hotelPriceWeatherList.get(i).getHotelKey() + ", " +
-                        controller.hotelPriceWeatherList.get(i).getDay() + ", " +
-                        controller.hotelPriceWeatherList.get(i).getPriceStatus() + ", " +
-                        controller.hotelPriceWeatherList.get(i).getTemp());
-            } else {
-                System.out.println(controller.hotelPriceWeatherList.get(i).getHotelKey() + ", " +
-                        controller.hotelPriceWeatherList.get(i).getDay() + ", " +
-                        controller.hotelPriceWeatherList.get(i).getPriceStatus());
-            }
-        }
-        jsonList.clear();
-        timer.cancel();
-        timer = null;
     }
 
-    public void readMessages(Controller controller, String direction, int amountOfLines, String topicName) throws CustomException {
-        try(BufferedReader br = new BufferedReader(new FileReader(direction))){
-            String line;
-            List<String> lines = new ArrayList<>();
-
-            while ((line = br.readLine()) != null){
-                lines.add(line);
-            }
-
-            int totalLines = lines.size();
-            int start = Math.max(0, totalLines - amountOfLines);;
-            int end = totalLines;
-            for (int i = start; i < end; i++){
-                controller.managerGeneral(lines.get(i), topicName);
-            }
-        }catch (IOException e){
-            throw new CustomException("", e);
-        }
-    }*/
 }
