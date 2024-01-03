@@ -3,6 +3,7 @@ package dacd.gil.control;
 import dacd.gil.control.Exception.CustomException;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -20,10 +21,17 @@ public class dataMartSQL implements storeInterface {
             createTable(statement, objectMap.get("location"));
 
             if(objectMap.get("object").equals("Hotel")){
-                if(!findHotel(statement, objectMap)){
+                if(!searchDate(statement, objectMap)){
                     insertHotel(statement, objectMap);
                 } else {
-                    updateHotel(statement, objectMap);
+                    if(isHotelEmpty(statement, objectMap)){
+                        updateHotel(statement, objectMap);
+                    }else{
+                        Map<String, String> fillWithWeather = new HashMap<>();
+                        fillWithWeather = weatherMapFiller(statement, objectMap);
+                        insertHotel(statement, objectMap);
+                        updateWeather(statement, fillWithWeather);
+                    }
                 }
             } else {
                 if(searchDate(statement, objectMap)){
@@ -35,6 +43,41 @@ public class dataMartSQL implements storeInterface {
         } catch (SQLException e) {
             throw new CustomException("Error in save function", e);
         }
+    }
+
+    private boolean isHotelEmpty(Statement statement, Map<String, String> objectMap) throws SQLException {
+        ResultSet resultSet = statement.executeQuery("SELECT * from " + objectMap.get("location"));
+        while(resultSet.next()){
+            String columnValue = resultSet.getString(2);
+            String hotelKeyColumn = resultSet.getString(1);
+            if (objectMap.get("day").equals(columnValue)){
+                if(hotelKeyColumn == null){
+                    resultSet.close();
+                    return true;
+                }
+            }
+        }
+        resultSet.close();
+        return false;
+    }
+
+    private Map<String, String> weatherMapFiller(Statement statement, Map<String, String> objectMap) throws SQLException {
+        Map<String, String> returnWeatherMap = new HashMap<>();
+        ResultSet resultSet = statement.executeQuery("SELECT * from " + objectMap.get("location"));
+        while(resultSet.next()){
+            String columnValue = resultSet.getString(2);
+            if (objectMap.get("day").equals(columnValue) && resultSet.getString(4) != null){
+                returnWeatherMap.put("Temperature", resultSet.getString(4));
+                returnWeatherMap.put("Rain", resultSet.getString(5));
+                returnWeatherMap.put("Humidity", resultSet.getString(6));
+                returnWeatherMap.put("Clouds", resultSet.getString(7));
+                returnWeatherMap.put("WindSpeed", resultSet.getString(8));
+                returnWeatherMap.put("location", objectMap.get("location"));
+                returnWeatherMap.put("day", objectMap.get("day"));
+            }
+        }
+        resultSet.close();
+        return returnWeatherMap;
     }
 
     private void updateWeather(Statement statement, Map<String, String> objectMap) throws CustomException {
@@ -56,8 +99,8 @@ public class dataMartSQL implements storeInterface {
         String query = "UPDATE " + objectMap.get("location") + " SET HotelKey = ?, PriceStatus = ? WHERE Date = ?";
         try (PreparedStatement preparedStatement = statement.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, objectMap.get("hotelKey"));
-            preparedStatement.setString(3, objectMap.get("priceStatus"));
-            preparedStatement.setString(2, objectMap.get("day"));
+            preparedStatement.setString(2, objectMap.get("priceStatus"));
+            preparedStatement.setString(3, objectMap.get("day"));
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new CustomException("Error updating Hotel", e);
@@ -102,8 +145,11 @@ public class dataMartSQL implements storeInterface {
         ResultSet resultSet = statement.executeQuery("SELECT * from " + objectMap.get("location"));
         while(resultSet.next()){
             String hotelKey = resultSet.getString(1);
+            System.out.println(hotelKey + " " + objectMap.get("hotelKey"));
             String date = resultSet.getString(2);
+            System.out.println(date + " " + objectMap.get("day"));
             if (objectMap.get("hotelKey").equals(hotelKey) && objectMap.get("day").equals(date)){
+                System.out.println("TRUE");
                 resultSet.close();
                 return true;
             }
