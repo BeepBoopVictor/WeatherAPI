@@ -80,8 +80,7 @@ public class hotelManager implements Manager{
             e.printStackTrace();
         }
 
-        List<String> averagePrices = getList(jsonNode, "averagePrices");
-        return averagePrices;
+        return getList(jsonNode, "averagePrices");
     }
 
     public List<String> getHotelExpensiveDate(String hotelJson){
