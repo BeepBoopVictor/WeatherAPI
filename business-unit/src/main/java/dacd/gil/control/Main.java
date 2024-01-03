@@ -16,8 +16,8 @@ public class Main {
         mapManager.put(args[2], new hotelManager(dataStore));
         TopicReceiver topicReceiver = new TopicReceiver(mapManager);
         readTextDatalake readTextDatalake = new readTextDatalake(mapManager);
-        //readTextDatalake.readEvents(args[4], "prediction.Weather");
-        //readTextDatalake.readEvents(args[3], "prediction.Hotel");
+        readTextDatalake.readEvents(args[4], "prediction.Weather");
+        readTextDatalake.readEvents(args[3], "prediction.Hotel");
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {

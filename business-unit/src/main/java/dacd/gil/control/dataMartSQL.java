@@ -2,6 +2,7 @@ package dacd.gil.control;
 
 import dacd.gil.control.Exception.CustomException;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class dataMartSQL implements storeInterface {
             createTable(statement, objectMap.get("location"));
 
             if(objectMap.get("object").equals("Hotel")){
-                if(!searchDate(statement, objectMap)){
+                if(!findHotel(statement, objectMap)){
                     insertHotel(statement, objectMap);
                 } else {
                     if(isHotelEmpty(statement, objectMap)){
