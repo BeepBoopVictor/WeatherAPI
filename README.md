@@ -21,7 +21,33 @@ The development enviroment used in this project is IntelliJ, and mainly develope
 
  ## Requirements
 
+For the correct use of the project there must exist two files named 'locations.txt' and 'APIkeys.txt'.
 
+* 'locations.txt': This file shall have the name, latitute and longitude of every location we want to extract data about the weather. Example of the content in the file:
+```
+{"name": "GranCanaria","lat": 28.1,"lon": -15.41}
+{"name": "Tenerife","lat": 28.46,"lon": -16.25}
+{"name": "Fuerteventura","lat": 28.2,"lon": -14.00}
+{"name": "Lanzarote","lat": 28.95,"lon": -13.76}
+{"name": "LaPalma","lat": 28.71,"lon": -17.9}
+{"name": "ElHierro","lat": 27.75,"lon": -18}
+{"name": "LaGomera","lat": 28.1,"lon": -17.11}
+{"name": "LaGraciosa","lat": 28.05,"lon": -15.44}
+```
+
+* 'APIkeys.txt': This file shall have the location name of the hotel (if the location matches with another from the locations file they must be written the same), and a hotel key ([How to obtain the hotel key](https://xotelo.com/how-to-get-hotel-key.html)). Example of the content in the file:
+```
+{"hotelToken": "g187472-d228489", "location": "GranCanaria"}
+{"hotelToken": "g562819-d600110", "location": "GranCanaria"}
+{"hotelToken": "g562819-d289643", "location": "GranCanaria"}
+{"hotelToken": "g662606-d296925", "location": "Tenerife"}
+{"hotelToken": "g580321-d282759", "location": "Lanzarote"}
+{"hotelToken": "g580322-d287995", "location": "Fuerteventura"}
+{"hotelToken": "g1190272-d2645782", "location": "LaGraciosa"}
+{"hotelToken": "g187474-d277394", "location": "ElHierro"}
+{"hotelToken": "g187470-d190895", "location": "LaGomera"}
+{"hotelToken": "g1177806-d3577949", "location": "LaPalma"}
+```
 
 ## Design:
 
