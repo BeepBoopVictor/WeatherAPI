@@ -7,29 +7,32 @@ Name: Víctor Gil Bernal
 
 ## Functionality:
 
-The projects consists on two modules, the first one conects to an OpenWeather API with a 5 day forecast, takes the values for the next five days and sends it to a broker every six hours, the second one receives the json objects and store the in a file.
+The project consists on four modules, dedicated to create a business model about recomendation of hotels based on weather and prices data.
+
+Two of them ('predict-provider' and 'hotel-prices-sensor') are in charge of collecting data about weather and hotels from APIs ('Xotelo' and 'OpenWeatherMap').
+
+'datalake-builder' collects the events from the last two modules, saving them in a historic datalake divided by topic and date in json format.
+
+'business unit' has the business logic, taking events from the datalake and the topics, saving it in a SQLite datamart, with an API in which the user can extract information from the datamart.
 
 ## Resources:
 
-The development enviroment used in this project is IntelliJ.
+The development enviroment used in this project is IntelliJ, and mainly developed in Java language.
 
  ## Requirements
 
- To use this code it is neccessary to insert **two arguments** in the predict-provider's Main, the first one is the **apiKey** and the second one 
- with a **direction to a txt file** with the json of each locations. Here is the text to put in the file:
 
-* {"name": "GranCanaria","lat": 28.1,"lon": -15.41}
-* {"name": "Tenerife","lat": 28.46,"lon": -16.25}
-* {"name": "Fuerteventura","lat": 28.2,"lon": -14.00}
-* {"name": "Lanzarote","lat": 28.95,"lon": -13.76}
-* {"name": "LaPalma","lat": 28.71,"lon": -17.9}
-* {"name": "ElHierro","lat": 27.75,"lon": -18}
-* {"name": "LaGomera","lat": 28.1,"lon": -17.11}
-* {"name": "LaGraciosa","lat": 28.05,"lon": -15.44}
-
-In the event-store-builder's Main it is only necessary **one argument**, which is the location of the location in which you want the json to be kept, for example in the Desktop.
 
 ## Design:
+
+### predict-provider
+
+### hotel-prices-sensor
+
+### datalake-builder
+
+### business-unit
+
 
 The design of the predict-provider:
 
