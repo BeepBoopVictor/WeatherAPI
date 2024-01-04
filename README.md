@@ -61,7 +61,7 @@ For the correct use of the project there must exist two files named 'locations.t
 * SendWeatherTopic: This interface has a void method, 'sendWeather', that takes as an argument a json string.
 * WeatherProvides: This interface has a method, 'weatherGet', that returns an ArrayList<String> and receives as an argument a Location.
 * OpenWeatherMapProvider: This class implements WeatherProvides, the constructor takes an APIkey as an argument and has a predefined template_url attribute that represents an url to get the data. the method 'weatherGet' takes a Location and replaces certain parts of the base URL with the latitute and longitude, connecting to this URL and extracting the data to insert into the ArrayList that will be returned.
-*  
+*  TopicWeather: This class implements SendWeatherTopic, the constructor has a predefined broker_URL ('tcp://localhost:61616'), the method SendWeather connects to this broker and sends each json string that receives to the topic 'prediction.Weather'.
 
 ### hotel-prices-sensor
 
