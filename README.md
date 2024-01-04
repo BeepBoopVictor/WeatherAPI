@@ -61,7 +61,12 @@ For the correct use of the project there must exist two files named 'locations.t
 * SendWeatherTopic: This interface has a void method, 'sendWeather', that takes as an argument a json string.
 * WeatherProvides: This interface has a method, 'weatherGet', that returns an ArrayList<String> and receives as an argument a Location.
 * OpenWeatherMapProvider: This class implements WeatherProvides, the constructor takes an APIkey as an argument and has a predefined template_url attribute that represents an url to get the data. the method 'weatherGet' takes a Location and replaces certain parts of the base URL with the latitute and longitude, connecting to this URL and extracting the data to insert into the ArrayList that will be returned.
-*  TopicWeather: This class implements SendWeatherTopic, the constructor has a predefined broker_URL ('tcp://localhost:61616'), the method SendWeather connects to this broker and sends each json string that receives to the topic 'prediction.Weather'.
+* TopicWeather: This class implements SendWeatherTopic, the constructor has a predefined broker_URL ('tcp://localhost:61616'), the method SendWeather connects to this broker and sends each json string that receives to the topic 'prediction.Weather'.
+* WeatherControl: This class has a method called 'Execute' that loops the locations array received from the function readLocations, that reads the file with all the locations, inserting them in the array, which will loop, sending its items to OpenWeatherMapProvider, receiving the strings of every prediction and inserting them in another array, then loops again and sends them to the broker by the function sendWeathers.
+* Main: calls to the function Execute from WeatherControl every six hours.
+
+![image](https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/ab3d4214-e820-4086-876b-7558611a6b23)
+
 
 ### hotel-prices-sensor
 
@@ -72,20 +77,6 @@ For the correct use of the project there must exist two files named 'locations.t
 
 The design of the predict-provider:
 
-The module has 2 model classes:
-- Location: consists on the coordinates in latitude, longitude and the name of the region.
-- Weather: temperature, rain probabilty, instant of the data, wind speed humidity, location and clouds
-
-  Control models:
-  - StoreException: Custom exception.
-  - WeatherProvides: an interface with  a function that returns a list of five weathers.
-  - OpenWeatherMapProvider: has two attributes, the apiKEY and the base URL, the function implemented from WeatherProvides takes two arguments, a location and an instant, connects to the database and reads the json, translating it into a Weather object and returning an array.
-  - SendWeatherTopic: an interface with a void function that receives as an argument a json String
-  - TopicWeather: implements SendWeatherTopic, uses the functions sendWeather to connect to a broker and send the Strings that receives to the topic.
-  - WeatherControl: Has a function called Execute that loops the locations array received from the function readLocations that reads the file with all the locations and splits and insert them in the array, and sends that array to OpenWeatherMapProvider, receiving the strings of every prediction, then loops again and sends them to the broker by the function sendWeathers.
-  - Main: calls to the function Execute from WeatherControl every six hours.
-
-![image](https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/ab3d4214-e820-4086-876b-7558611a6b23)
 
 The design of the event-store-builder:
 
