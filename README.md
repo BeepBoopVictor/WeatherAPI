@@ -55,7 +55,7 @@ For the correct use of the project there must exist two files named 'locations.t
 
 **MODEL:**
 * Location: This class has three attributes, name, latitute and longitude.
-* Weather: This class represents the weather values of a location, its attributes are: Location, temperature, humidity, rain, wind speed, clouds, prediction time, ss ('prediction.Weather') and ts (TimeStamp).
+* Weather: This class represents the weather values of a location, its attributes are: Location, temperature, humidity, rain, wind speed, clouds, prediction time, ss ('predict-provider') and ts (TimeStamp).
 
 **CONTROL:**
 * SendWeatherTopic: This interface has a void method, 'sendWeather', that takes as an argument a json string.
@@ -65,10 +65,21 @@ For the correct use of the project there must exist two files named 'locations.t
 * WeatherControl: This class has a method called 'Execute' that loops the locations array received from the function readLocations, that reads the file with all the locations, inserting them in the array, which will loop, sending its items to OpenWeatherMapProvider, receiving the strings of every prediction and inserting them in another array, then loops again and sends them to the broker by the function sendWeathers.
 * Main: calls to the function Execute from WeatherControl every six hours.
 
-![image](https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/ab3d4214-e820-4086-876b-7558611a6b23)
-
+<img src="https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/ab3d4214-e820-4086-876b-7558611a6b23" alt="Descripción de la imagen" width="900" height="600">
 
 ### hotel-prices-sensor
+
+**MODEL:**
+* Hotel: This class will be converted to the event, representing the hotel, it has a HotelValues, three ArrayList<String> with the dates in which the prices are either cheap, average or expensive, a timestamp and an ss ('hotel-provider')
+* HotelValues: This class represents the values taken from the text file, it has two attributes, location and hotelToken.
+
+**CONTROL:**
+* SendHotel: This interface has a void method, 'sendHotel', that takes as an argument a json string.
+* InterfacePriceProvider: This interface has a method, 'priceGet', that returns a Hotel and receives as an argument a hotelValues string and a checkOut string.
+* PriceProvider: This class implements InterfacePriceProvider, the constructor has a predefined template_url attribute that represents an url to get the data. The method 'priceGet' takes a hotelValues and a checkOut and replaces certain parts of the base URL with these, connects to this URL and extracts the data to create the Hotel that is returned.
+* TopicHotel: This class implements SendHotel, the constructor has a predefined broker_URL ('tcp://localhost:61616'), the method SendHotel connects to this broker and sends each json string that receives to the topic 'prediction.Hotel'.
+* PriceControl: This class has a method called 'Execute' that loops the hotelValues array received from the function readHotelTokens, that reads the file with all the hotelValues, inserting them in the array, which will loop, sending its items to PriceProvider, receiving the strings of every prediction and inserting them in another array, then loops again and sends them to the broker by the function sendHotel.
+* Main: calls to the function Execute from PriceControl every six hours.
 
 ### datalake-builder
 
