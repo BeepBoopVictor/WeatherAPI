@@ -53,6 +53,16 @@ For the correct use of the project there must exist two files named 'locations.t
 
 ### predict-provider
 
+**MODEL:**
+* Location: This class has three attributes, name, latitute and longitude.
+* Weather: This class represents the weather values of a location, its attributes are: Location, temperature, humidity, rain, wind speed, clouds, prediction time, ss ('prediction.Weather') and ts (TimeStamp).
+
+**CONTROL:**
+* SendWeatherTopic: This interface has a void method, 'sendWeather', that takes as an argument a json string.
+* WeatherProvides: This interface has a method, 'weatherGet', that returns an ArrayList<String> and receives as an argument a Location.
+* OpenWeatherMapProvider: This class implements WeatherProvides, the constructor takes an APIkey as an argument and has a predefined template_url attribute that represents an url to get the data. the method 'weatherGet' takes a Location and replaces certain parts of the base URL with the latitute and longitude, connecting to this URL and extracting the data to insert into the ArrayList that will be returned.
+*  
+
 ### hotel-prices-sensor
 
 ### datalake-builder
