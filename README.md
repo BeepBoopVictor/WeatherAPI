@@ -113,9 +113,9 @@ For the correct use of the project there must exist two files named 'locations.t
 * DataMartSQL: This class implements 'StoreInterface', the constructor takes as an argument the direction of the datamart and has a 'Statement' attribute. The 'save' method takes the Map with the attributes of the model classes and stores them in the datamart.
 * HotelManager: This class implements 'Manager', the constructor takes as an argument a 'StoreInterface'. The events sent to the 'manageEvents' method are split in many Hotel objects kept in an ArrayList, this ArrayList is looped and every Hotel attributes are kept in the Map that will be sent to the 'save' method.
 * WeatherManager: This class implements 'Manager', the constructor takes as an argument a 'StoreInterface'. The events sent to the 'manageEvents' method are split in many Hotel objects kept in an ArrayList, this ArrayList is looped and every Hotel attributes are kept in the Map that will be sent to the 'save' method.
-* ReadTextDatalake: 
-* TopicReceiver:
-* Main: 
+* ReadTextDatalake: This class implements 'DataLakeLoader', the constructor takes as an argument a Map<String, Manager>. The 'readEvents' method sends the last events from the datalake to the 'Manager'.
+* TopicReceiver: This class implements 'Subscriber', the constructor takes as an argument a Map<String, Manager> and has a brokerURL predefined. The start function creates two subscriptions to both topics and sends the events to the 'Manager' method: 'manageEvents'. 
+* Main: The main method 
 
 
 
