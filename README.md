@@ -49,9 +49,37 @@ For the correct use of the project there must exist two files named 'locations.t
 {"hotelToken": "g1177806-d3577949", "location": "LaPalma"}
 ```
 
+### Execution Requirements:
+
+#### predict-provider:
+
+This module takes two arguments in this order:
+1. The OpenWeatherMapProvider API
+2. The direction to 'locations.txt'
+
+#### hotel-prices-sensor:
+
+This module takes one argument:
+1. The direction to 'APIKeys.txt'
+
+#### datalake-builder:
+
+This module takes one argument:
+1. The direction where you want to create the datalake.
+
+#### business-unit:
+
+This module takes five arguments:
+1. The complete direction to the datamart.
+2. The topic name: 'prediction.Weather'
+3. The topic name: 'prediction.Hotel'
+4. The complete direction to the file that stores the .events about hotels.
+5. 4. The complete direction to the file that stores the .events about weathers.
+
+
 ## Design:
 
-### predict-provider
+### predict-provider:
 
 **MODEL:**
 * Location: This class has three attributes, name, latitute and longitude.
