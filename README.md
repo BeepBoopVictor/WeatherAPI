@@ -115,7 +115,7 @@ For the correct use of the project there must exist two files named 'locations.t
 * WeatherManager: This class implements 'Manager', the constructor takes as an argument a 'StoreInterface'. The events sent to the 'manageEvents' method are split in many Hotel objects kept in an ArrayList, this ArrayList is looped and every Hotel attributes are kept in the Map that will be sent to the 'save' method.
 * ReadTextDatalake: This class implements 'DataLakeLoader', the constructor takes as an argument a Map<String, Manager>. The 'readEvents' method sends the last events from the datalake to the 'Manager'.
 * TopicReceiver: This class implements 'Subscriber', the constructor takes as an argument a Map<String, Manager> and has a brokerURL predefined. The start function creates two subscriptions to both topics and sends the events to the 'Manager' method: 'manageEvents'. 
-* Main: The main method 
+* Main: The main method creates instances of the classes and calls to the 'start' function.
 
 
 
