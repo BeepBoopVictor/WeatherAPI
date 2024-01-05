@@ -110,10 +110,10 @@ For the correct use of the project there must exist two files named 'locations.t
 * StoreInterface: This interface has a void method 'save' that takes as argument a Map<String, String> with the attributes of the Hotel or the Weather.
 * Subscriber: This interface has a void method 'start' that takes as argument a 'StoreInterface' class.
 
-* DataMartSQL: 
-* HotelManager:
-* WeatherManager:
-* ReadTextDatalake:
+* DataMartSQL: This class implements 'StoreInterface', the constructor takes as an argument the direction of the datamart and has a 'Statement' attribute. The 'save' method takes the Map with the attributes of the model classes and stores them in the datamart.
+* HotelManager: This class implements 'Manager', the constructor takes as an argument a 'StoreInterface'. The events sent to the 'manageEvents' method are split in many Hotel objects kept in an ArrayList, this ArrayList is looped and every Hotel attributes are kept in the Map that will be sent to the 'save' method.
+* WeatherManager: This class implements 'Manager', the constructor takes as an argument a 'StoreInterface'. The events sent to the 'manageEvents' method are split in many Hotel objects kept in an ArrayList, this ArrayList is looped and every Hotel attributes are kept in the Map that will be sent to the 'save' method.
+* ReadTextDatalake: 
 * TopicReceiver:
 * Main: 
 
