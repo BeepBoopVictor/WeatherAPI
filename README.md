@@ -90,7 +90,7 @@ For the correct use of the project there must exist two files named 'locations.t
 
 **CONTROL:**
 
-* Storage: This interface has a void method, 'consume', that takes as an argument a json string and the name of the topic.
+* Storage: This interface has a void method, 'consume', that takes as arguments a json string and the name of the topic.
 * Subscriber: This interface has a void method, 'start'.
 * FileEventStoreBuilder: This class implements 'Storage', the constructor takes as an argument a directory a path to store the events, the method 'consume' stores the events taken from AMQTopicSubscriber in written files with the format: 'datalake/eventstore/{topic}/{ss}/{YYYYMMDD}.events'.
 * AMQTopicSubscriber: This class implements 'Subscriber', the constructor takes as an argument a 'Storage' class and has a predefined brokerURL('tcp://localhost:61616'), the start function creates two subscriptions to both topics and sends the events to the 'Storage' method: 'consume'. 
@@ -98,19 +98,27 @@ For the correct use of the project there must exist two files named 'locations.t
 
 ### business-unit
 
+**MODEL:**
+
+* Weather: This class will be stored in the SQLite database, its attributes are: locationName, temperature, humidity, rain, wind speed, clouds and prediction time.
+* Hotel: This class will be stored in the SQLite database, locationName, hotel key, date and priceStatus.
+
+**CONTROL:**
+
+* DatalakeLoader: This interface has a void method 'readEvents' that takes as arguments the datalake direction and the topic name.
+* Manager: This interface has a void method 'manageEvents' that takes as argument a json string.
+* StoreInterface: This interface has a void method 'save' that takes as argument a Map<String, String> with the attributes of the Hotel or the Weather.
+* Subscriber: This interface has a void method 'start' that takes as argument a 'StoreInterface' class.
+
+* DataMartSQL: 
+* HotelManager:
+* WeatherManager:
+* ReadTextDatalake:
+* TopicReceiver:
+* Main: 
 
 
 
-The design of the event-store-builder:
-
-Control models:
-  - Subscriber: an interface with a void function named start, that receives a listener interface.
-  - AMQTopicSubscriber: a class that implements Subscriber with the start function, that receives the topicName, the brokerURL, the consumerName, clientID to create a durable subscriber to the topic that receives the JSON strings and calls to the consume function in the listener class.
-  - Listener: and interface with a void function named consume, that receives as an argument a json String.
-  - FileEventStore: a class that implements Listener with a function consume that creates a series of folders with a file that stores the json Strings.
-  - The main class executes both classes and receives as an argument the direction im which you want to create the folders.
-
-![image](https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/c42b689d-f699-425c-a5c2-94c892780120)
 
 
 
