@@ -83,10 +83,22 @@ For the correct use of the project there must exist two files named 'locations.t
 
 ### datalake-builder
 
+**MODEL:**
+
+* Weather: This class represents the weather values taken as events from the broker, its attributes are: Location, temperature, humidity, rain, wind speed, clouds, prediction time, ss ('predict-provider') and ts (TimeStamp).
+* Location: This class has three attributes, name, latitute and longitude.
+
+**CONTROL:**
+
+* Storage: This interface has a void method, 'consume', that takes as an argument a json string and the name of the topic.
+* Subscriber: This interface has a void method, 'start'.
+* FileEventStoreBuilder: This class implements 'Storage', the constructor takes as an argument a directory a path to store the events, the method 'consume' stores the events taken from AMQTopicSubscriber in written files with the format: 'datalake/eventstore/{topic}/{ss}/{YYYYMMDD}.events'.
+* AMQTopicSubscriber: This class implements 'Subscriber', the constructor takes as an argument a 'Storage' class and has a predefined brokerURL('tcp://localhost:61616'), the start function creates two subscriptions to both topics and sends the events to the 'Storage' method: 'consume'. 
+* Main: The main method creates an instance of 'FileEventStoreBuilder' and 'AMQTopicSubscriber', then calls to the 'start' function.
+
 ### business-unit
 
 
-The design of the predict-provider:
 
 
 The design of the event-store-builder:
