@@ -1,5 +1,7 @@
 package dacd.gil.control;
 
+import dacd.gil.control.exception.StoreException;
+
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,7 +13,13 @@ public class Main {
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() {weatherController.execute();}
+            public void run() {
+                try {
+                    weatherController.execute();
+                } catch (StoreException e) {
+                    e.printStackTrace();
+                }
+            }
         }, new Date(), 6 * 60 * 60 * 1000);
     }
 }

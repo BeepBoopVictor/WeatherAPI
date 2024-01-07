@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class weatherManager implements Manager{
-    private dataMartSQL dataStore;
-    public weatherManager(dataMartSQL dataStore) {
-        this.dataStore = dataStore;
+    private storeInterface dataStore;
+    public weatherManager(storeInterface storeInterface) {
+        this.dataStore = storeInterface;
     }
 
     @Override

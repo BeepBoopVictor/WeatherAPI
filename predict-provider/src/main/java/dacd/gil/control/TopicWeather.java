@@ -8,7 +8,7 @@ public class TopicWeather implements SendWeatherTopic{
     private final String brokerURL;
 
     public TopicWeather(){
-        this.brokerURL = "tcp://localhost:61616";
+            this.brokerURL = "tcp://localhost:61616";
     }
 
 

@@ -4,5 +4,5 @@ import dacd.gil.control.exception.StoreException;
 import jakarta.jms.JMSException;
 
 public interface Subscriber {
-    void start() throws StoreException, JMSException;
+    void start() throws StoreException;
 }

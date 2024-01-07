@@ -50,7 +50,7 @@ public class priceControl {
         Gson gson = new Gson();
         hotelValues hotelValues;
         ArrayList<hotelValues> hotelValuesArrayList = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(textPath + "\\APIkeys.txt"))){
+        try(BufferedReader br = new BufferedReader(new FileReader(textPath))){
             String line;
             while ((line = br.readLine()) != null){
                 hotelValues = gson.fromJson(line, hotelValues.class);

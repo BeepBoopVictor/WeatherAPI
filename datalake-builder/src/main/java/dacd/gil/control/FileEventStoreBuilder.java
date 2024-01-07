@@ -2,7 +2,6 @@ package dacd.gil.control;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dacd.gil.control.exception.StoreException;
 
 import java.io.BufferedWriter;
 import java.io.File;

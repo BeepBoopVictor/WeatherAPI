@@ -7,7 +7,6 @@ import dacd.gil.model.Location;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 
 public class weatherControl {
@@ -35,16 +34,10 @@ public class weatherControl {
         }catch (IOException e){throw new RuntimeException(e);}
     }
 
-    public void execute(){
+    public void execute() throws StoreException {
         ArrayList<String> weathers;
-        Instant actualInstant = Instant.now();
-
         for(Location location: locations){
-            try {
-                weathers = this.openWeatherMapProvider.weatherGet(location, actualInstant);
-            } catch (StoreException e) {
-                throw new RuntimeException(e);
-            }
+            weathers = this.openWeatherMapProvider.weatherGet(location);
             for (String weather: weathers){
                 this.topicWeather.sendWeather(weather);
             }

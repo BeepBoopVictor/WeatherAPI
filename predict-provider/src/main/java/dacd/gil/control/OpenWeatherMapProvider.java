@@ -30,7 +30,8 @@ public class OpenWeatherMapProvider implements WeatherProvides {
         this.apiKEY = apiKEY;
     }
 
-    public ArrayList<String> weatherGet(Location location, Instant instant) throws StoreException {
+    @Override
+    public ArrayList<String> weatherGet(Location location) throws StoreException {
         URL url = getUrl(location);
         String jsonWeather = getStringBuilder(url);
         try {

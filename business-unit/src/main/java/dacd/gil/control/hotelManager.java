@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 public class hotelManager implements Manager{
-    private dataMartSQL dataMartSQL;
-    public hotelManager(dataMartSQL dataMartSQL) {
-        this.dataMartSQL = dataMartSQL;
+    private storeInterface dataMartSQL;
+    public hotelManager(storeInterface storeInterface) {
+        this.dataMartSQL = storeInterface;
     }
 
     @Override
@@ -32,7 +32,6 @@ public class hotelManager implements Manager{
             hotelMap.put("day", hotel.getDay().toString());
             dataMartSQL.save(hotelMap);
         }
-
     }
 
     public ArrayList<Hotel> convertToHotel(String jsonString){

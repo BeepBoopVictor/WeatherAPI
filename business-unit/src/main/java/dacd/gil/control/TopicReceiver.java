@@ -6,7 +6,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import java.util.*;
 
 
-public class TopicReceiver implements Subscriber {
+public class    TopicReceiver implements Subscriber {
     private String brokerUrl;
     private static Map<String, Manager> mapManager;
     private static final Object lock = new Object();
@@ -22,7 +22,7 @@ public class TopicReceiver implements Subscriber {
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
-            connection.setClientID("1234");
+            connection.setClientID("12345");
             connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             createSuscription(session, "prediction.Weather");
@@ -49,7 +49,6 @@ public class TopicReceiver implements Subscriber {
     private static void manageEventsSend(String topic, TextMessage message) {
         try{
             String text = message.getText();
-            System.out.println(text);
             Manager manager = mapManager.get(topic);
             manager.manageEvents(text);
         } catch (JMSException | CustomException e) {

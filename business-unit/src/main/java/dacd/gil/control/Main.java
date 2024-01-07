@@ -29,5 +29,6 @@ public class Main {
         });
 
         executorService.shutdown();
+        //dataStore.dropTable();
     }
 }

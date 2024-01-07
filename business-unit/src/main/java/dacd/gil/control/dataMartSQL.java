@@ -22,7 +22,7 @@ public class dataMartSQL implements storeInterface {
             createTable(statement, objectMap.get("location"));
 
             if(objectMap.get("object").equals("Hotel")){
-                if(!findHotel(statement, objectMap)){
+                /*if(!findHotel(statement, objectMap)){
                     insertHotel(statement, objectMap);
                 } else {
                     if(isHotelEmpty(statement, objectMap)){
@@ -33,7 +33,14 @@ public class dataMartSQL implements storeInterface {
                         insertHotel(statement, objectMap);
                         updateWeather(statement, fillWithWeather);
                     }
+                }*/
+
+                if(searchDate(statement, objectMap)){
+                    updateHotel(statement, objectMap);
+                } else {
+                    insertHotel(statement, objectMap);
                 }
+
             } else {
                 if(searchDate(statement, objectMap)){
                     updateWeather(statement, objectMap);
@@ -43,6 +50,19 @@ public class dataMartSQL implements storeInterface {
             }
         } catch (SQLException e) {
             throw new CustomException("Error in save function", e);
+        }
+    }
+
+    void dropTable() throws CustomException{
+        try {
+            ResultSet resultSet = this.statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("name");
+                String sqlDeleteData = "DELETE FROM " + tableName;
+                statement.executeUpdate(sqlDeleteData);
+            }
+        } catch (SQLException e){
+            throw new CustomException("Error deleting the database ", e);
         }
     }
 
