@@ -4,6 +4,7 @@ import dacd.gil.control.Exception.CustomException;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,16 @@ public class dataMartSQL implements storeInterface {
                 }*/
 
                 if(searchDate(statement, objectMap)){
-                    updateHotel(statement, objectMap);
+                    if(isHotelEmpty(statement, objectMap)) {
+                        updateHotel(statement, objectMap);
+                    } else {
+                        if (!findHotel(statement, objectMap)) {
+                            Map<String, String> fillWithWeather = new HashMap<>();
+                            fillWithWeather = weatherMapFiller(statement, objectMap);
+                            insertHotel(statement, objectMap);
+                            updateWeather(statement, fillWithWeather);
+                        }
+                    }
                 } else {
                     insertHotel(statement, objectMap);
                 }
@@ -53,16 +63,19 @@ public class dataMartSQL implements storeInterface {
         }
     }
 
-    void dropTable() throws CustomException{
+    void dropTables() throws CustomException {
         try {
+            ArrayList<String> tableNames = new ArrayList<>();
             ResultSet resultSet = this.statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
             while (resultSet.next()) {
-                String tableName = resultSet.getString("name");
-                String sqlDeleteData = "DELETE FROM " + tableName;
-                statement.executeUpdate(sqlDeleteData);
+                tableNames.add(resultSet.getString("name"));
             }
-        } catch (SQLException e){
-            throw new CustomException("Error deleting the database ", e);
+            for(String tableName: tableNames){
+                String sqlDropTable = "DROP TABLE IF EXISTS " + tableName;
+                statement.executeUpdate(sqlDropTable);
+            }
+        } catch (SQLException e) {
+            throw new CustomException("Error dropping tables from the database", e);
         }
     }
 
@@ -168,7 +181,7 @@ public class dataMartSQL implements storeInterface {
             String hotelKey = resultSet.getString(1);
             System.out.println(hotelKey + " " + objectMap.get("hotelKey"));
             String date = resultSet.getString(2);
-            System.out.println(date + " " + objectMap.get("day"));
+
             if (objectMap.get("hotelKey").equals(hotelKey) && objectMap.get("day").equals(date)){
                 System.out.println("TRUE");
                 resultSet.close();

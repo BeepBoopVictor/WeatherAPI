@@ -15,13 +15,19 @@ import java.util.function.BiConsumer;
 
 public class sparkInitializer {
     private static Map<String, List<Double>> mapOfVariables = new HashMap<>();
-    public static void main(String[] args) {
+    private static String dbPath;
+
+    public sparkInitializer(String dbPath) {
+        this.dbPath = dbPath;
+    }
+
+    public void init() {
         mapOfVariables.put("WARM", List.of(25.0, 0.0, 60.0, 3.0, 0.80));
         mapOfVariables.put("COLD", List.of(10.0, 0.0, 60.0, 60.0, 0.80));
         mapOfVariables.put("SUNNY", List.of(25.0, 0.0, 60.0, 0.0, 0.80));
         mapOfVariables.put("SNOW", List.of(-2.5, 10.0, 80.0, 60.0, 0.80));
         Spark.port(8080);
-        configureRoutes(args[0]);
+        configureRoutes(this.dbPath);
     }
 
     private static void configureRoutes(String path){

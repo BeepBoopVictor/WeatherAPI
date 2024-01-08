@@ -28,7 +28,7 @@ public class    TopicReceiver implements Subscriber {
             createSuscription(session, "prediction.Weather");
             createSuscription(session, "prediction.Hotel");
         } catch (JMSException e) {
-            throw new CustomException("", e);
+            throw new CustomException("Error in the start function", e);
         }
     }
 
