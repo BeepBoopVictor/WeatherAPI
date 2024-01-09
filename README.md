@@ -93,7 +93,7 @@ This module takes five arguments:
 * WeatherControl: This class has a method called 'Execute' that loops the locations array received from the function readLocations, that reads the file with all the locations, inserting them in the array, which will loop, sending its items to OpenWeatherMapProvider, receiving the strings of every prediction and inserting them in another array, then loops again and sends them to the broker by the function sendWeathers.
 * Main: calls to the function Execute from WeatherControl every six hours.
 
-<img src="https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/ab3d4214-e820-4086-876b-7558611a6b23" alt="Descripción de la imagen" width="900" height="600">
+<img src="https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/adeceade-e0ca-4872-982d-2449541b792c" alt="Descripción de la imagen" width="900" height="600">
 
 ### hotel-prices-sensor
 
@@ -109,6 +109,9 @@ This module takes five arguments:
 * PriceControl: This class has a method called 'Execute' that loops the hotelValues array received from the function readHotelTokens, that reads the file with all the hotelValues, inserting them in the array, which will loop, sending its items to PriceProvider, receiving the strings of every prediction and inserting them in another array, then loops again and sends them to the broker by the function sendHotel.
 * Main: calls to the function Execute from PriceControl every six hours.
 
+<img src="https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/69a1b567-40a1-4cf3-b038-7b68773883b6" alt="Descripción de la imagen" width="900" height="600">
+
+
 ### datalake-builder
 
 **MODEL:**
@@ -123,6 +126,9 @@ This module takes five arguments:
 * FileEventStoreBuilder: This class implements 'Storage', the constructor takes as an argument a directory a path to store the events, the method 'consume' stores the events taken from AMQTopicSubscriber in written files with the format: 'datalake/eventstore/{topic}/{ss}/{YYYYMMDD}.events'.
 * AMQTopicSubscriber: This class implements 'Subscriber', the constructor takes as an argument a 'Storage' class and has a predefined brokerURL('tcp://localhost:61616'), the start function creates two subscriptions to both topics and sends the events to the 'Storage' method: 'consume'. 
 * Main: The main method creates an instance of 'FileEventStoreBuilder' and 'AMQTopicSubscriber', then calls to the 'start' function.
+
+<img src="https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/de7092d8-557d-462f-a74e-bcd64e70029d" alt="Descripción de la imagen" width="900" height="600">
+
 
 ### business-unit
 
