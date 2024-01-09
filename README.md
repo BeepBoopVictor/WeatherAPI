@@ -80,6 +80,12 @@ This module takes five arguments:
 4. The complete direction to the file that stores the .events about hotels.
 5. 4. The complete direction to the file that stores the .events about weathers.
 
+**Execution examples:**
+
+* java -jar business-unit-1.0-SNAPSHOT-jar-with-dependencies.jar C:\Users\Usuario\Desktop\datamart.db prediction.Weather prediction.Hotel C:\Users\Usuario\Desktop\eventstore\prediction.Hotel\hotel-provider C:\Users\Usuario\Desktop\eventstore\prediction.Weather\predict-provider
+* java -jar datalake-builder-1.0-SNAPSHOT-jar-with-dependencies.jar C:\Users\Usuario\Desktop
+* java -jar hotel-prices-sensor-1.0-SNAPSHOT-jar-with-dependencies.jar C:\Users\Usuario\Desktop\APIkeys.txt
+* java -jar predict-provider-1.0-SNAPSHOT-jar-with-dependencies.jar 8fb79003589f3912f05096709e2dbffd C:\Users\Usuario\Desktop\locations.txt
 
 ## Design:
 
@@ -155,6 +161,7 @@ This module takes five arguments:
 * TopicReceiver: This class implements 'Subscriber', the constructor takes as an argument a Map<String, Manager> and has a brokerURL predefined. The start function creates two subscriptions to both topics and sends the events to the 'Manager' method: 'manageEvents'. 
 * Main: The main method creates instances of the classes and calls to the 'start' function.
 
+![image](https://github.com/BeepBoopVictor/WeatherAPI/assets/145380029/cea09997-061c-4423-bc19-0d3c09c7c00a)
 
 
 
