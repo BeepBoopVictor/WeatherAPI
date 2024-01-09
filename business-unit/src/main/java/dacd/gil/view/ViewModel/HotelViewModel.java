@@ -1,7 +1,5 @@
 package dacd.gil.view.ViewModel;
 
-import java.time.Instant;
-
 public class HotelViewModel {
     private String location;
     private String hotelKey;

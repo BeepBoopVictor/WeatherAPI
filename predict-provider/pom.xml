@@ -67,7 +67,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>.lib/</classpathPrefix>
-                            <mainClass>dacd.gil.control.Main</mainClass>
+                            <mainClass>dacd.gil.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

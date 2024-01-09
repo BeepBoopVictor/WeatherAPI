@@ -2,7 +2,6 @@ package dacd.gil.control;
 
 import dacd.gil.control.Exception.CustomException;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,19 +22,6 @@ public class dataMartSQL implements storeInterface {
             createTable(statement, objectMap.get("location"));
 
             if(objectMap.get("object").equals("Hotel")){
-                /*if(!findHotel(statement, objectMap)){
-                    insertHotel(statement, objectMap);
-                } else {
-                    if(isHotelEmpty(statement, objectMap)){
-                        updateHotel(statement, objectMap);
-                    }else{
-                        Map<String, String> fillWithWeather = new HashMap<>();
-                        fillWithWeather = weatherMapFiller(statement, objectMap);
-                        insertHotel(statement, objectMap);
-                        updateWeather(statement, fillWithWeather);
-                    }
-                }*/
-
                 if(searchDate(statement, objectMap)){
                     if(isHotelEmpty(statement, objectMap)) {
                         updateHotel(statement, objectMap);
@@ -63,7 +49,7 @@ public class dataMartSQL implements storeInterface {
         }
     }
 
-    void dropTables() throws CustomException {
+    public void dropTables() throws CustomException {
         try {
             ArrayList<String> tableNames = new ArrayList<>();
             ResultSet resultSet = this.statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
@@ -179,11 +165,9 @@ public class dataMartSQL implements storeInterface {
         ResultSet resultSet = statement.executeQuery("SELECT * from " + objectMap.get("location"));
         while(resultSet.next()){
             String hotelKey = resultSet.getString(1);
-            System.out.println(hotelKey + " " + objectMap.get("hotelKey"));
             String date = resultSet.getString(2);
 
             if (objectMap.get("hotelKey").equals(hotelKey) && objectMap.get("day").equals(date)){
-                System.out.println("TRUE");
                 resultSet.close();
                 return true;
             }

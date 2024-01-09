@@ -4,8 +4,6 @@ import dacd.gil.control.exception.StoreException;
 import jakarta.jms.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import java.util.List;
-
 
 public class AMQTopicSubscriber implements Subscriber{
     private final String brokerUrl;

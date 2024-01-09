@@ -1,6 +1,9 @@
-package dacd.gil.control;
+package dacd.gil;
 
+import dacd.gil.control.OpenWeatherMapProvider;
+import dacd.gil.control.TopicWeather;
 import dacd.gil.control.exception.StoreException;
+import dacd.gil.control.weatherControl;
 
 import java.util.Date;
 import java.util.Timer;

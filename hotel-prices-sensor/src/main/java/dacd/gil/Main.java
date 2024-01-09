@@ -1,5 +1,8 @@
-package dacd.gil.control;
+package dacd.gil;
 
+import dacd.gil.control.PriceController;
+import dacd.gil.control.PriceProvider;
+import dacd.gil.control.TopicHotel;
 import dacd.gil.control.exception.CustomException;
 
 import java.util.Date;
@@ -8,14 +11,14 @@ import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) {
-        priceControl priceControl = new priceControl(new PriceProvider(), new TopicHotel());
+        PriceController PriceController = new PriceController(new PriceProvider(), new TopicHotel());
         Timer timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 try {
-                    priceControl.execute(args[0]);
+                    PriceController.execute(args[0]);
                 } catch (CustomException e) {
                     e.printStackTrace();
                 }
