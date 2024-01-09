@@ -82,10 +82,10 @@ This module takes five arguments:
 
 **Execution examples:**
 
-* java -jar business-unit-1.0-SNAPSHOT-jar-with-dependencies.jar C:\Users\Usuario\Desktop\datamart.db prediction.Weather prediction.Hotel C:\Users\Usuario\Desktop\eventstore\prediction.Hotel\hotel-provider C:\Users\Usuario\Desktop\eventstore\prediction.Weather\predict-provider
-* java -jar datalake-builder-1.0-SNAPSHOT-jar-with-dependencies.jar C:\Users\Usuario\Desktop
-* java -jar hotel-prices-sensor-1.0-SNAPSHOT-jar-with-dependencies.jar C:\Users\Usuario\Desktop\APIkeys.txt
-* java -jar predict-provider-1.0-SNAPSHOT-jar-with-dependencies.jar 8fb79003589f3912f05096709e2dbffd C:\Users\Usuario\Desktop\locations.txt
+* java -jar business-unit-1.0-SNAPSHOT-jar-with-dependencies.jar C:\...\datamart.db prediction.Weather prediction.Hotel C:\...\eventstore\prediction.Hotel\hotel-provider C:\...\eventstore\prediction.Weather\predict-provider
+* java -jar datalake-builder-1.0-SNAPSHOT-jar-with-dependencies.jar C:\...\Desktop
+* java -jar hotel-prices-sensor-1.0-SNAPSHOT-jar-with-dependencies.jar C:\...\APIkeys.txt
+* java -jar predict-provider-1.0-SNAPSHOT-jar-with-dependencies.jar apiKEY C:\...\locations.txt
 
 ## Design:
 
