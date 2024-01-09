@@ -1,9 +1,13 @@
 # WeatherAPI
 
 Subject: Desarrollo de aplicaciones de Ciencia de Datos
+
 Grade: Second of Data science
+
 School: Universidad de Las Palmas de Gran Canaria
+
 Name: Víctor Gil Bernal
+
 
 ## Functionality:
 
