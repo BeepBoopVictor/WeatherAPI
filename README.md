@@ -170,15 +170,15 @@ The API gives to ways of getting data.
 
 Once activated you can get recommendations writing:
 
-https://8080/api/CHEAP
+localhost:8080/api/CHEAP
 
-https://8080/api/WARM
+localhost:8080/api/WARM
 
-https://8080/api/SNOW
+localhost:8080/api/SNOW
 
-https://8080/api/COLD
+localhost:8080/api/COLD
 
-https://8080/api/SUNNY
+localhost:8080/api/SUNNY
 
 
 
